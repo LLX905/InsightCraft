@@ -1,3 +1,16 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "data-viz-hero",
+      "description": "Abstract data visualization showing various charts and graphs",
+      "imageUrl": "https://picsum.photos/seed/insight-viz/1200/800",
+      "imageHint": "data visualization charts"
+    },
+    {
+      "id": "mindmap-concept",
+      "description": "A structured mind map visualization representing complex thoughts",
+      "imageUrl": "https://picsum.photos/seed/insight-mind/1200/800",
+      "imageHint": "mind map analysis"
+    }
+  ]
 }
