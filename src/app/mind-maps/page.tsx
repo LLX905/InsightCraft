@@ -1,194 +1,204 @@
-"use client"
+'use client';
 
-import * as React from "react"
-import { useState, useRef } from "react"
+import * as React from 'react';
+import { useState } from 'react';
 import { 
   GitGraph, 
   Sparkles, 
   Loader2, 
   Download, 
-  Maximize2, 
-  ArrowRight,
-  ArrowDown,
+  LayoutGrid,
+  Trello,
+  Maximize2,
+  Minimize2,
   ChevronRight,
   Target,
-  Layers,
-  Search,
-  CheckCircle2,
-  AlertCircle
-} from "lucide-react"
+  FileText,
+  ArrowDown,
+  ArrowRight
+} from 'lucide-react';
 
-import { DashboardLayout } from "@/components/dashboard-layout"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
-import { generateMindMap, type MindMapOutput } from "@/ai/flows/ai-problem-solving-mind-map-flow"
-import { useToast } from "@/hooks/use-toast"
-import { cn } from "@/lib/utils"
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { generateMindMap, type MindMapOutput } from '@/ai/flows/ai-problem-solving-mind-map-flow';
+import { useToast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
 
 export default function MindMapsPage() {
-  const { toast } = useToast()
-  const [isGenerating, setIsGenerating] = useState(false)
-  const [problem, setProblem] = useState("Global supply chain disruptions in the semiconductor industry affecting consumer electronics prices and availability.")
-  const [mindMap, setMindMap] = useState<MindMapOutput | null>(null)
-  const [layoutMode, setLayoutMode] = useState<"horizontal" | "vertical">("horizontal")
-  const mapRef = useRef<HTMLDivElement>(null)
+  const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
+  const [problem, setProblem] = useState("Why is my business revenue declining?");
+  const [layout, setLayout] = useState<'horizontal' | 'vertical'>('horizontal');
+  const [results, setResults] = useState<MindMapOutput | null>(null);
 
   const handleGenerate = async () => {
-    if (!problem.trim()) return
-    setIsGenerating(true)
+    if (!problem.trim()) return;
+    setLoading(true);
     try {
-      const result = await generateMindMap({ problemStatement: problem })
-      setMindMap(result)
-      toast({
-        title: "Mind Map Generated",
-        description: "Deep analytical structure completed."
-      })
+      const output = await generateMindMap({ problem });
+      setResults(output);
+      toast({ title: "Analysis Complete", description: "Deep 5-level mind map generated." });
     } catch (error) {
-      toast({
-        title: "Generation Failed",
-        description: "Could not create mind map analysis.",
-        variant: "destructive"
-      })
+      toast({ title: "Error", description: "Failed to generate mind map.", variant: "destructive" });
     } finally {
-      setIsGenerating(false)
+      setLoading(false);
     }
-  }
+  };
 
-  const exportMap = () => {
-    // Basic implementation of printing to export as PDF
-    window.print()
-  }
+  const exportAsPDF = () => {
+    window.print();
+  };
 
   return (
-    <DashboardLayout>
-      <div className="grid gap-6">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between no-print">
-          <div>
-            <h2 className="text-2xl font-headline font-bold">Analytical Mind Map Generator</h2>
-            <p className="text-muted-foreground">Solve complex problems with deep, multi-level structural analysis.</p>
-          </div>
-          {mindMap && (
-            <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={() => setLayoutMode(layoutMode === "horizontal" ? "vertical" : "horizontal")}>
-                Layout: {layoutMode}
-              </Button>
-              <Button variant="outline" size="sm" className="gap-2" onClick={exportMap}>
-                <Download className="h-4 w-4" />
-                Export PDF
+    <div className="space-y-8">
+      <div className="grid gap-6 lg:grid-cols-3 no-print">
+        <Card className="lg:col-span-2 border-t-4 border-t-chart-3">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 font-headline">
+              <Target className="h-5 w-5 text-chart-3" />
+              Problem Definition
+            </CardTitle>
+            <CardDescription>Enter a complex question or problem statement for deep analysis.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Textarea 
+              value={problem}
+              onChange={(e) => setProblem(e.target.value)}
+              placeholder="e.g., Why are customers leaving our product?"
+              className="min-h-[100px] text-lg"
+            />
+            <div className="flex items-center justify-between pt-2">
+              <div className="flex items-center gap-4">
+                <Label className="text-xs uppercase font-bold tracking-widest text-muted-foreground">Orientation</Label>
+                <RadioGroup 
+                  value={layout} 
+                  onValueChange={(v: any) => setLayout(v)}
+                  className="flex items-center gap-4"
+                >
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="horizontal" id="horizontal" />
+                    <Label htmlFor="horizontal" className="text-sm cursor-pointer">Horizontal</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="vertical" id="vertical" />
+                    <Label htmlFor="vertical" className="text-sm cursor-pointer">Vertical</Label>
+                  </div>
+                </RadioGroup>
+              </div>
+              <Button onClick={handleGenerate} disabled={loading} className="bg-chart-3 hover:bg-chart-3/90 gap-2 px-8">
+                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+                Analyze Deeply
               </Button>
             </div>
-          )}
-        </div>
+          </CardContent>
+        </Card>
 
-        <div className="grid gap-6 no-print">
-          <Card>
+        {results && (
+          <Card className="bg-muted/10 border-dashed">
             <CardHeader>
-              <CardTitle className="font-headline flex items-center gap-2">
-                <Target className="h-5 w-5 text-primary" />
-                Problem Definition
-              </CardTitle>
-              <CardDescription>Enter the core issue you want to analyze deeply.</CardDescription>
+              <CardTitle className="text-sm font-headline uppercase tracking-widest text-muted-foreground">Export Options</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <Textarea 
-                value={problem}
-                onChange={(e) => setProblem(e.target.value)}
-                placeholder="Describe your complex problem here..."
-                className="min-h-[100px] text-lg"
-              />
-              <Button 
-                onClick={handleGenerate} 
-                disabled={isGenerating} 
-                className="w-full bg-primary py-6 text-lg"
-              >
-                {isGenerating ? <Loader2 className="h-5 w-5 mr-2 animate-spin" /> : <Sparkles className="h-5 w-5 mr-2" />}
-                {isGenerating ? "Analyzing & Structuring..." : "Generate Deep Analysis"}
+            <CardContent className="grid grid-cols-1 gap-2">
+              <Button variant="outline" className="justify-start gap-2" onClick={exportAsPDF}>
+                <FileText className="h-4 w-4" /> Export as PDF (Print)
               </Button>
+              <p className="text-[10px] text-muted-foreground text-center mt-2 italic">PNG/SVG exports coming soon in this prototype.</p>
             </CardContent>
           </Card>
-        </div>
-
-        {mindMap ? (
-          <div ref={mapRef} className="flex flex-col items-center py-10 print:p-0">
-            {/* Core Problem Node */}
-            <div className="mindmap-node z-10 p-6 rounded-xl bg-primary text-primary-foreground border-4 border-primary shadow-xl w-full max-w-2xl text-center mb-12">
-              <span className="text-xs font-bold uppercase tracking-widest opacity-80 mb-2 block">Core Problem</span>
-              <h3 className="text-2xl font-headline font-bold">{mindMap.coreProblem}</h3>
-            </div>
-
-            <div className={cn(
-              "flex w-full",
-              layoutMode === "horizontal" ? "flex-col items-center gap-16" : "flex-row flex-wrap justify-center gap-12"
-            )}>
-              {mindMap.perspectives.map((perspective, pIdx) => (
-                <div key={pIdx} className={cn(
-                  "flex flex-col items-center w-full",
-                  layoutMode === "horizontal" ? "border-t pt-8" : "max-w-md"
-                )}>
-                  {/* Perspective Node */}
-                  <div className="mindmap-node p-4 rounded-lg bg-muted border-2 border-muted-foreground/20 shadow-md w-80 text-center mb-8">
-                    <span className="text-[10px] font-bold uppercase tracking-tighter text-muted-foreground block mb-1">Perspective {pIdx + 1}</span>
-                    <h4 className="font-headline font-semibold text-lg">{perspective.perspectiveName}</h4>
-                  </div>
-
-                  <div className={cn(
-                    "flex flex-wrap justify-center gap-8 w-full",
-                    layoutMode === "vertical" ? "flex-col items-center" : ""
-                  )}>
-                    {perspective.causes.map((cause, cIdx) => (
-                      <div key={cIdx} className="flex flex-col gap-4 max-w-sm">
-                        {/* Cause Node */}
-                        <div className="mindmap-node p-4 rounded-lg bg-white border border-border shadow-sm">
-                          <div className="flex items-start gap-3 mb-4">
-                            <div className="p-2 rounded-full bg-orange-100 text-orange-600">
-                              <AlertCircle className="h-4 w-4" />
-                            </div>
-                            <div>
-                              <span className="text-[10px] font-bold uppercase text-orange-600 block">Sub-cause</span>
-                              <p className="font-semibold text-base leading-tight">{cause.causeName}</p>
-                            </div>
-                          </div>
-                          
-                          {/* Root Causes Section */}
-                          <div className="space-y-2 mb-4 pl-4 border-l-2 border-orange-200">
-                            {cause.rootCauses.map((rc, rcIdx) => (
-                              <div key={rcIdx} className="flex gap-2 text-xs text-muted-foreground">
-                                <Search className="h-3 w-3 mt-0.5 shrink-0" />
-                                <span>{rc}</span>
-                              </div>
-                            ))}
-                          </div>
-
-                          {/* Solutions Section */}
-                          <div className="space-y-3 mt-4 pt-4 border-t">
-                            <span className="text-[10px] font-bold uppercase text-green-600 flex items-center gap-1">
-                              <CheckCircle2 className="h-3 w-3" /> Potential Solutions
-                            </span>
-                            {cause.solutions.map((sol, sIdx) => (
-                              <div key={sIdx} className="p-3 rounded-md bg-green-50 text-green-800 text-sm font-medium border border-green-100 shadow-sm flex gap-2">
-                                <ChevronRight className="h-4 w-4 shrink-0 mt-0.5" />
-                                {sol}
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        ) : !isGenerating && (
-          <div className="flex flex-col items-center justify-center py-24 text-center text-muted-foreground opacity-50">
-            <GitGraph className="h-20 w-20 mb-6" />
-            <h3 className="text-xl font-headline font-semibold">Ready for Analysis</h3>
-            <p className="max-w-md mx-auto">Define a complex problem above to generate a multi-perspective analytical mind map.</p>
-          </div>
         )}
       </div>
-    </DashboardLayout>
-  )
+
+      {results ? (
+        <div className={cn(
+          "flex flex-col items-center py-8 relative",
+          layout === "vertical" ? "space-y-12" : "space-y-12"
+        )}>
+          {/* Level 1: Central Problem */}
+          <div className="mindmap-node bg-chart-3 text-white p-8 rounded-2xl shadow-xl border-4 border-chart-3/20 max-w-2xl text-center z-20">
+            <span className="text-[10px] font-bold uppercase tracking-[0.3em] opacity-80 mb-2 block">Central Problem</span>
+            <h2 className="text-2xl font-headline font-bold">{results.centralProblem}</h2>
+          </div>
+
+          <div className="w-full flex justify-center z-10">
+            {layout === 'vertical' ? <ArrowDown className="text-muted-foreground/30 h-10 w-10" /> : <ArrowDown className="text-muted-foreground/30 h-10 w-10" />}
+          </div>
+
+          <div className={cn(
+            "flex w-full",
+            layout === "horizontal" ? "flex-col items-stretch gap-16" : "flex-row flex-wrap justify-center gap-12"
+          )}>
+            {results.perspectives.map((perspective, pIdx) => (
+              <div key={pIdx} className={cn(
+                "flex flex-col items-center",
+                layout === "horizontal" ? "w-full pt-8 border-t border-dashed" : "max-w-md w-full"
+              )}>
+                {/* Level 2: Perspective */}
+                <div className="mindmap-node bg-background border-2 border-chart-3/30 p-5 rounded-xl shadow-md w-80 text-center mb-10 z-20">
+                  <span className="text-[9px] font-bold uppercase tracking-widest text-chart-3 block mb-1">Perspective</span>
+                  <h3 className="font-headline font-semibold text-lg">{perspective.perspectiveName}</h3>
+                </div>
+
+                <div className={cn(
+                  "grid gap-8 w-full",
+                  layout === "horizontal" ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"
+                )}>
+                  {perspective.subCauses.map((sc, scIdx) => (
+                    <div key={scIdx} className="space-y-4">
+                      {/* Level 3: Sub-cause */}
+                      <Card className="mindmap-node border-l-4 border-l-orange-400 shadow-lg">
+                        <CardHeader className="p-4 pb-2">
+                          <span className="text-[9px] font-bold uppercase text-orange-500 tracking-widest block">Sub-cause</span>
+                          <CardTitle className="text-base font-semibold">{sc.causeName}</CardTitle>
+                        </CardHeader>
+                        <CardContent className="p-4 pt-0 space-y-4">
+                          {/* Level 4: Root Causes */}
+                          <div className="space-y-2">
+                            <span className="text-[9px] font-bold uppercase text-muted-foreground tracking-tighter flex items-center gap-1">
+                              <Trello className="h-3 w-3" /> Root Causes
+                            </span>
+                            <ul className="space-y-1">
+                              {sc.rootCauses.map((rc, rcIdx) => (
+                                <li key={rcIdx} className="text-xs text-muted-foreground flex gap-2">
+                                  <div className="h-1.5 w-1.5 rounded-full bg-orange-200 mt-1 shrink-0" />
+                                  {rc}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+
+                          {/* Level 5: Solutions */}
+                          <div className="space-y-2 pt-3 border-t">
+                            <span className="text-[9px] font-bold uppercase text-green-600 tracking-tighter flex items-center gap-1">
+                              <Sparkles className="h-3 w-3" /> Actionable Solutions
+                            </span>
+                            <div className="space-y-2">
+                              {sc.solutions.map((sol, sIdx) => (
+                                <div key={sIdx} className="p-2.5 rounded-md bg-green-50 text-green-800 text-xs font-medium border border-green-100 flex gap-2">
+                                  <ChevronRight className="h-3 w-3 shrink-0 mt-0.5 text-green-400" />
+                                  {sol}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : !loading && (
+        <div className="flex flex-col items-center justify-center py-32 text-center text-muted-foreground opacity-30">
+          <GitGraph className="h-20 w-20 mb-6" />
+          <h3 className="text-2xl font-headline font-semibold">Analytical Canvas</h3>
+          <p className="max-w-sm mx-auto">Enter a problem statement above to map out its root causes and solutions across multiple perspectives.</p>
+        </div>
+      )}
+    </div>
+  );
 }

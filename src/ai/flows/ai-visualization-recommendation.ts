@@ -1,6 +1,6 @@
 'use server';
 /**
- * @fileOverview A flow that recommends suitable data visualization types based on dataset characteristics and user intent.
+ * @fileOverview A flow that recommends suitable data visualization types based on dataset characteristics, user intent, and specific tools.
  *
  * - aiVisualizationRecommendation - A function that handles the AI visualization recommendation process.
  * - AIVisualizationRecommendationInput - The input type for the aiVisualizationRecommendation function.
@@ -12,33 +12,33 @@ import {z} from 'genkit';
 
 // Input Schema
 const AIVisualizationRecommendationInputSchema = z.object({
-  datasetCharacteristics:
-    z.string().describe(
-      'A description of the dataset characteristics, including variable types (e.g., categorical, numerical, time series, hierarchical, geographic) and their roles.'
-    ),
-  userGoal:
-    z.string().describe(
-      'The user\'s high-level goal for the visualization (e.g., "compare sales over time", "show distribution of customers", "identify correlations").'
-    ),
+  tool: z.enum(['Excel', 'Tableau', 'Power BI', 'Python (Matplotlib / Seaborn)', 'R', 'Other']).describe('The visualization tool being used.'),
+  columns: z.string().describe('The data columns or fields available (comma-separated or text description).'),
+  dataTypes: z.array(z.string()).optional().describe('Detected or user-specified data types (e.g., Numerical, Categorical, Time series, Geographical).'),
+  purpose: z.enum([
+    'Comparison',
+    'Trend over time',
+    'Distribution',
+    'Relationship between variables',
+    'Composition / percentage',
+    'Geographic analysis',
+    'Ranking'
+  ]).describe('The high-level goal or purpose of the visualization.'),
 });
 export type AIVisualizationRecommendationInput = z.infer<
   typeof AIVisualizationRecommendationInputSchema
 >;
 
 // Output Schema
+const RecommendationItemSchema = z.object({
+  chartType: z.string().describe('The recommended chart type (e.g., Bar Chart, Line Chart, etc.).'),
+  reason: z.string().describe('Detailed reasoning for why this chart type is suitable.'),
+  fieldMapping: z.string().describe('How to map the provided fields to chart axes/properties (e.g., X-axis -> Date).'),
+  toolNotes: z.string().describe('Tool-specific implementation notes for the chosen tool.'),
+});
+
 const AIVisualizationRecommendationOutputSchema = z.object({
-  recommendedVisualizations:
-    z.array(z.string()).describe(
-      'An array of recommended visualization types (e.g., "Bar Chart", "Line Chart", "Scatter Plot", "Heatmap").'
-    ),
-  explanation:
-    z.string().describe(
-      'An explanation of why the recommended visualizations are suitable for the given dataset characteristics and user goal.'
-    ),
-  configurationGuidance:
-    z.string().describe(
-      'Guidance on how to configure the recommended visualizations, including potential axis mappings, aggregation strategies, and relevant parameters.'
-    ),
+  recommendations: z.array(RecommendationItemSchema).describe('An array of recommended visualizations.'),
 });
 export type AIVisualizationRecommendationOutput = z.infer<
   typeof AIVisualizationRecommendationOutputSchema
@@ -49,15 +49,21 @@ const aiVisualizationRecommendationPrompt = ai.definePrompt({
   name: 'aiVisualizationRecommendationPrompt',
   input: {schema: AIVisualizationRecommendationInputSchema},
   output: {schema: AIVisualizationRecommendationOutputSchema},
-  prompt: `You are an expert data visualization specialist. Your task is to recommend suitable visualization types for a given dataset and user goal. Provide clear explanations and configuration guidance.
+  prompt: `You are an expert data visualization specialist. Your task is to recommend suitable visualization types for a given tool, set of data fields, and user goal.
 
-Dataset Characteristics:
-{{{datasetCharacteristics}}}
+Context:
+- Tool: {{{tool}}}
+- Available Columns: {{{columns}}}
+- Data Types: {{#if dataTypes}}{{#each dataTypes}}{{{this}}}{{#unless @last}}, {{/unless}}{{/each}}{{else}}Unknown{{/if}}
+- Purpose: {{{purpose}}}
 
-User Goal:
-{{{userGoal}}}
+Based on these, recommend one or more visualization types. For each recommendation, provide:
+1. Chart Type: A standard chart name.
+2. Reason: Why it fits the data types and purpose.
+3. Field Mapping: Suggest which columns go to which axes or visual encodings.
+4. Tool-Specific Notes: Advice specific to implementing this in {{{tool}}}.
 
-Based on these, recommend one or more visualization types, explain why they are suitable, and provide configuration guidance. The output should be a JSON object conforming to the AIVisualizationRecommendationOutputSchema.`,
+The output should be a JSON object conforming to the AIVisualizationRecommendationOutputSchema.`,
 });
 
 // Flow definition
