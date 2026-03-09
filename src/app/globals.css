@@ -75,12 +75,22 @@
   }
 }
 
-.mindmap-node {
-  @apply shadow-sm transition-transform duration-200 hover:scale-[1.02];
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background-color: white !important;
+  }
+  .print-container {
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+  }
 }
 
-.line-drawing {
-  stroke: hsl(var(--muted-foreground) / 0.3);
-  stroke-width: 2;
-  fill: none;
+.mindmap-node {
+  @apply shadow-sm transition-transform duration-200 hover:scale-[1.02];
 }

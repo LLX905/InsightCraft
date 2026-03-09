@@ -50,17 +50,33 @@ export default function MindMapsPage() {
     }
   };
 
+  const getExportOptions = () => {
+    if (!mindMapRef.current) return {};
+    
+    // To ensure full capture of potentially scrolling content
+    const width = mindMapRef.current.scrollWidth;
+    const height = mindMapRef.current.scrollHeight;
+
+    return { 
+      backgroundColor: '#f8fafc', 
+      padding: 40,
+      width,
+      height,
+      style: {
+        width: `${width}px`,
+        height: `${height}px`,
+        transform: 'none',
+        margin: '0',
+      },
+      cacheBust: true,
+      skipFonts: true 
+    };
+  };
+
   const exportAsPNG = async () => {
     if (!mindMapRef.current) return;
     try {
-      const dataUrl = await toPng(mindMapRef.current, { 
-        backgroundColor: '#f8fafc', 
-        padding: 40,
-        cacheBust: true,
-        // fontEmbedCSS is often blocked by CORS. Skipping font scanning is the safest fix for SecurityError.
-        // It will use system fonts or the fonts already loaded in the browser context.
-        skipFonts: true 
-      });
+      const dataUrl = await toPng(mindMapRef.current, getExportOptions());
       const link = document.createElement('a');
       link.download = `mind-map-${Date.now()}.png`;
       link.href = dataUrl;
@@ -73,12 +89,7 @@ export default function MindMapsPage() {
   const exportAsSVG = async () => {
     if (!mindMapRef.current) return;
     try {
-      const dataUrl = await toSvg(mindMapRef.current, { 
-        backgroundColor: '#f8fafc', 
-        padding: 40,
-        cacheBust: true,
-        skipFonts: true
-      });
+      const dataUrl = await toSvg(mindMapRef.current, getExportOptions());
       const link = document.createElement('a');
       link.download = `mind-map-${Date.now()}.svg`;
       link.href = dataUrl;
@@ -89,6 +100,7 @@ export default function MindMapsPage() {
   };
 
   const exportAsPDF = () => {
+    if (!results) return;
     window.print();
   };
 
@@ -161,7 +173,7 @@ export default function MindMapsPage() {
       </div>
 
       {results ? (
-        <div ref={mindMapRef} className="p-10 bg-slate-50 rounded-2xl border shadow-inner overflow-x-auto min-w-full">
+        <div ref={mindMapRef} className="p-10 bg-slate-50 rounded-2xl border shadow-inner overflow-x-auto min-w-full print-container">
           <div className={cn(
             "flex items-center justify-center min-w-max",
             layout === 'vertical' ? "flex-col" : "flex-row"
