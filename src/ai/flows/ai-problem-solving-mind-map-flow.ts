@@ -7,18 +7,18 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
-const SolutionSchema = z.string().describe('A potential action or solution (Level 5).');
-const RootCauseSchema = z.string().describe('A deeper, fundamental root cause (Level 4).');
+const SolutionSchema = z.string().describe('A potential action or strategic solution (Level 5).');
+const RootCauseSchema = z.string().describe('A deeper, fundamental root cause or factor (Level 4).');
 
 const SubCauseNodeSchema = z.object({
-  causeName: z.string().describe('The specific sub-cause description (Level 3).'),
-  rootCauses: z.array(RootCauseSchema).describe('Underlying reasons for this sub-cause.'),
-  solutions: z.array(SolutionSchema).describe('Potential actions to address this sub-cause.'),
+  causeName: z.string().describe('The specific investigation point or sub-cause description (Level 3).'),
+  rootCauses: z.array(RootCauseSchema).min(2).describe('Underlying reasons for this specific investigation point.'),
+  solutions: z.array(SolutionSchema).min(2).describe('Actionable strategic steps to address these factors.'),
 });
 
 const PerspectiveNodeSchema = z.object({
   perspectiveName: z.string().describe('A major analytical perspective or category (Level 2).'),
-  subCauses: z.array(SubCauseNodeSchema).describe('A list of specific sub-causes under this perspective.'),
+  subCauses: z.array(SubCauseNodeSchema).min(2).describe('A list of specific investigation points under this perspective.'),
 });
 
 const MindMapInputSchema = z.object({
@@ -28,7 +28,7 @@ export type MindMapInput = z.infer<typeof MindMapInputSchema>;
 
 const MindMapOutputSchema = z.object({
   centralProblem: z.string().describe('The restated core problem (Level 1).'),
-  perspectives: z.array(PerspectiveNodeSchema).describe('Multiple major perspectives exploring the issue.'),
+  perspectives: z.array(PerspectiveNodeSchema).min(3).describe('Multiple major analytical perspectives exploring the issue.'),
 });
 export type MindMapOutput = z.infer<typeof MindMapOutputSchema>;
 
@@ -40,18 +40,18 @@ const mindMapPrompt = ai.definePrompt({
   name: 'problemSolvingMindMapPrompt',
   input: {schema: MindMapInputSchema},
   output: {schema: MindMapOutputSchema},
-  prompt: `You are an expert strategic consultant. Analyze the given problem and generate a comprehensive 5-level mind map in JSON format.
+  prompt: `You are an expert strategic consultant and data analyst. Analyze the given problem and generate a comprehensive 5-level analytical mind map in JSON format.
 
-Depth Requirement:
-Level 1: Central Problem
-Level 2: Major Perspectives (Identify MANY distinct angles - at least 4-6)
-Level 3: Sub-causes (For each perspective, identify multiple contributing factors)
-Level 4: Root causes (Drill down into the "why" for each sub-cause)
-Level 5: Possible actions or solutions (Actionable steps for each sub-cause/root cause)
+Your analysis must follow this exact hierarchy:
+Level 1: Central Problem (The core question).
+Level 2: Major Perspectives (Identify 3-5 distinct analytical angles, e.g., Operational, Financial, Customer-centric, Competitive).
+Level 3: Investigation Points (For each perspective, identify 2-3 specific factors contributing to the problem).
+Level 4: Root Factors (Drill down into the fundamental "whys" for each investigation point).
+Level 5: Strategic Actions (Actionable, high-impact steps to resolve the identified root factors).
 
-Ensure the analysis is deep, exploring overlooked factors and provide a thorough multi-perspective understanding.
+Ensure the analysis is deep, exploring overlooked factors and providing a thorough multi-perspective understanding.
 
-Problem: {{{problem}}}`,
+Problem Statement: {{{problem}}}`,
 });
 
 const generateMindMapFlow = ai.defineFlow(
@@ -63,7 +63,7 @@ const generateMindMapFlow = ai.defineFlow(
   async input => {
     const {output} = await mindMapPrompt(input);
     if (!output) {
-      throw new Error('Failed to generate mind map output.');
+      throw new Error('The AI was unable to generate a valid analytical map. Please try a more specific problem statement.');
     }
     return output;
   }
