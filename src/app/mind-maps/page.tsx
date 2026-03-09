@@ -1,4 +1,3 @@
-
 'use client';
 
 import * as React from 'react';
@@ -54,26 +53,38 @@ export default function MindMapsPage() {
   const exportAsPNG = async () => {
     if (!mindMapRef.current) return;
     try {
-      const dataUrl = await toPng(mindMapRef.current, { backgroundColor: '#f8fafc', padding: 40 });
+      const dataUrl = await toPng(mindMapRef.current, { 
+        backgroundColor: '#f8fafc', 
+        padding: 40,
+        cacheBust: true,
+        // fontEmbedCSS is often blocked by CORS. Skipping font scanning is the safest fix for SecurityError.
+        // It will use system fonts or the fonts already loaded in the browser context.
+        skipFonts: true 
+      });
       const link = document.createElement('a');
       link.download = `mind-map-${Date.now()}.png`;
       link.href = dataUrl;
       link.click();
-    } catch (err) {
-      toast({ title: "Export Failed", description: "Could not generate PNG image.", variant: "destructive" });
+    } catch (err: any) {
+      toast({ title: "Export Failed", description: err.message || "Could not generate PNG image.", variant: "destructive" });
     }
   };
 
   const exportAsSVG = async () => {
     if (!mindMapRef.current) return;
     try {
-      const dataUrl = await toSvg(mindMapRef.current, { backgroundColor: '#f8fafc', padding: 40 });
+      const dataUrl = await toSvg(mindMapRef.current, { 
+        backgroundColor: '#f8fafc', 
+        padding: 40,
+        cacheBust: true,
+        skipFonts: true
+      });
       const link = document.createElement('a');
       link.download = `mind-map-${Date.now()}.svg`;
       link.href = dataUrl;
       link.click();
-    } catch (err) {
-      toast({ title: "Export Failed", description: "Could not generate SVG image.", variant: "destructive" });
+    } catch (err: any) {
+      toast({ title: "Export Failed", description: err.message || "Could not generate SVG image.", variant: "destructive" });
     }
   };
 
