@@ -101,6 +101,7 @@ export default function MindMapsPage() {
 
   const exportAsPDF = () => {
     if (!results) return;
+    // Native print is the most reliable PDF export method without jspdf
     window.print();
   };
 

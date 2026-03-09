@@ -5,7 +5,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { BarChart3, GitGraph, Sparkles } from 'lucide-react';
 import VisualizationsPage from '@/app/visualizations/page';
 import MindMapsPage from '@/app/mind-maps/page';
-import { cn } from '@/lib/utils';
 
 export default function AppHome() {
   return (
@@ -24,7 +23,7 @@ export default function AppHome() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto p-4 md:p-8">
+      <main className="max-w-7xl mx-auto p-4 md:p-8 print:p-0 print:max-w-none print:m-0">
         <Tabs defaultValue="viz" className="w-full space-y-8">
           <div className="flex justify-center no-print">
             <TabsList className="grid w-full max-w-2xl grid-cols-2 h-14 p-1">

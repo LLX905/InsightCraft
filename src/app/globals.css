@@ -76,18 +76,36 @@
 }
 
 @media print {
+  @page {
+    margin: 1cm;
+    size: auto;
+  }
+  
   .no-print {
     display: none !important;
   }
+  
   body {
     background-color: white !important;
+    padding: 0 !important;
+    margin: 0 !important;
   }
+  
   .print-container {
     padding: 0 !important;
     margin: 0 !important;
     border: none !important;
     box-shadow: none !important;
     overflow: visible !important;
+    width: 100% !important;
+    min-width: unset !important;
+    background: white !important;
+  }
+
+  .mindmap-node {
+    break-inside: avoid;
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
   }
 }
 
