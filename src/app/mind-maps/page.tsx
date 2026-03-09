@@ -13,7 +13,8 @@ import {
   ArrowRight,
   ChevronRight,
   Trello,
-  Layout
+  Layout,
+  ClipboardCheck
 } from 'lucide-react';
 import { toPng, toSvg } from 'html-to-image';
 
@@ -52,7 +53,6 @@ export default function MindMapsPage() {
   const getExportOptions = () => {
     if (!mindMapRef.current) return {};
     
-    // To ensure full capture of potentially scrolling content
     const width = mindMapRef.current.scrollWidth;
     const height = mindMapRef.current.scrollHeight;
 
@@ -169,14 +169,13 @@ export default function MindMapsPage() {
             "flex items-center justify-center min-w-max",
             layout === 'vertical' ? "flex-col" : "flex-row"
           )}>
-            {/* Level 1: Central Problem */}
+            {/* Stage 1: Central Problem */}
             <div className="relative z-10">
               <div className="mindmap-node bg-chart-3 text-white p-8 rounded-2xl shadow-xl border-4 border-white w-80 text-center mx-auto">
                 <span className="text-[10px] font-bold uppercase tracking-[0.3em] opacity-80 mb-2 block">Central Problem</span>
                 <h2 className="text-xl font-headline font-bold leading-tight">{results.centralProblem}</h2>
               </div>
               
-              {/* Connector from Level 1 */}
               <div className={cn(
                 "flex items-center justify-center",
                 layout === 'vertical' ? "h-12 w-full" : "w-12 h-full absolute top-1/2 left-full -translate-y-1/2"
@@ -189,7 +188,7 @@ export default function MindMapsPage() {
             </div>
 
             <div className={cn(
-              "flex gap-12",
+              "flex gap-16",
               layout === 'vertical' ? "flex-row flex-nowrap pt-4" : "flex-col flex-nowrap pl-4"
             )}>
               {results.perspectives.map((perspective, pIdx) => (
@@ -197,14 +196,13 @@ export default function MindMapsPage() {
                   "flex items-center",
                   layout === 'vertical' ? "flex-col" : "flex-row"
                 )}>
-                  {/* Level 2: Perspective */}
+                  {/* Stage 2: Perspective */}
                   <div className="relative group">
                     <div className="mindmap-node bg-white border-2 border-chart-3 p-5 rounded-xl shadow-md w-64 text-center z-10 relative">
                       <span className="text-[9px] font-bold uppercase tracking-widest text-chart-3 block mb-1">Perspective</span>
                       <h3 className="font-headline font-semibold text-base">{perspective.perspectiveName}</h3>
                     </div>
                     
-                    {/* Connector to children */}
                     <div className={cn(
                       "flex items-center justify-center",
                       layout === 'vertical' ? "h-12 w-full" : "w-12 h-full absolute top-1/2 left-full -translate-y-1/2"
@@ -217,46 +215,66 @@ export default function MindMapsPage() {
                   </div>
 
                   <div className={cn(
-                    "flex gap-6",
+                    "flex gap-10",
                     layout === 'vertical' ? "flex-row pt-4" : "flex-col pl-4"
                   )}>
                     {perspective.subCauses.map((sc, scIdx) => (
-                      <div key={scIdx} className="space-y-4">
-                        {/* Level 3-5: Details Card */}
-                        <Card className="mindmap-node border-l-4 border-l-orange-400 shadow-lg w-72 transition-all hover:shadow-xl">
-                          <CardHeader className="p-4 pb-2">
-                            <span className="text-[9px] font-bold uppercase text-orange-500 tracking-widest block">Sub-cause</span>
-                            <CardTitle className="text-sm font-bold leading-snug">{sc.causeName}</CardTitle>
-                          </CardHeader>
-                          <CardContent className="p-4 pt-0 space-y-4">
-                            {/* Level 4: Root Causes */}
-                            <div className="space-y-2">
-                              <span className="text-[9px] font-bold uppercase text-muted-foreground tracking-tighter flex items-center gap-1">
-                                <Trello className="h-3 w-3" /> Root Causes
-                              </span>
-                              <ul className="space-y-1.5">
-                                {sc.rootCauses.map((rc, rcIdx) => (
-                                  <li key={rcIdx} className="text-[11px] text-muted-foreground flex gap-2 leading-tight">
-                                    <div className="h-1.5 w-1.5 rounded-full bg-orange-200 mt-1 shrink-0" />
-                                    {rc}
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-
-                            {/* Level 5: Solutions */}
-                            <div className="space-y-2 pt-3 border-t">
-                              <span className="text-[9px] font-bold uppercase text-green-600 tracking-tighter flex items-center gap-1">
-                                <Sparkles className="h-3 w-3" /> Solutions
-                              </span>
-                              <div className="space-y-1.5">
-                                {sc.solutions.map((sol, sIdx) => (
-                                  <div key={sIdx} className="p-2 rounded-md bg-green-50 text-green-800 text-[10px] font-medium border border-green-100 flex gap-1.5 leading-tight">
-                                    <ChevronRight className="h-2.5 w-2.5 shrink-0 mt-0.5 text-green-400" />
-                                    {sol}
-                                  </div>
-                                ))}
+                      <div key={scIdx} className={cn(
+                        "flex items-center",
+                        layout === 'vertical' ? "flex-col" : "flex-row"
+                      )}>
+                        {/* Stage 3: Analysis Card (Causes) */}
+                        <div className="relative">
+                          <Card className="mindmap-node border-l-4 border-l-orange-400 shadow-lg w-72 transition-all hover:shadow-xl bg-white z-10 relative">
+                            <CardHeader className="p-4 pb-2">
+                              <span className="text-[9px] font-bold uppercase text-orange-500 tracking-widest block">Sub-cause</span>
+                              <CardTitle className="text-sm font-bold leading-snug">{sc.causeName}</CardTitle>
+                            </CardHeader>
+                            <CardContent className="p-4 pt-0 space-y-3">
+                              <div className="space-y-2">
+                                <span className="text-[9px] font-bold uppercase text-muted-foreground tracking-tighter flex items-center gap-1">
+                                  <Trello className="h-3 w-3" /> Root causes
+                                </span>
+                                <ul className="space-y-1.5">
+                                  {sc.rootCauses.map((rc, rcIdx) => (
+                                    <li key={rcIdx} className="text-[11px] text-muted-foreground flex gap-2 leading-tight">
+                                      <div className="h-1.5 w-1.5 rounded-full bg-orange-200 mt-1 shrink-0" />
+                                      {rc}
+                                    </li>
+                                  ))}
+                                </ul>
                               </div>
+                            </CardContent>
+                          </Card>
+
+                          {/* Connector to Solutions */}
+                          <div className={cn(
+                            "flex items-center justify-center",
+                            layout === 'vertical' ? "h-10 w-full" : "w-10 h-full absolute top-1/2 left-full -translate-y-1/2"
+                          )}>
+                            <div className={cn(
+                              "bg-orange-200",
+                              layout === 'vertical' ? "w-0.5 h-full" : "h-0.5 w-full"
+                            )} />
+                          </div>
+                        </div>
+
+                        {/* Stage 4: Action Card (Solutions) */}
+                        <Card className="mindmap-node border-l-4 border-l-green-500 shadow-lg w-72 transition-all hover:shadow-xl bg-green-50/30">
+                          <CardHeader className="p-4 pb-2">
+                            <span className="text-[9px] font-bold uppercase text-green-600 tracking-widest flex items-center gap-1">
+                              <ClipboardCheck className="h-3 w-3" /> Action Plan
+                            </span>
+                            <CardTitle className="text-[10px] text-muted-foreground font-medium italic">Recommended Solutions</CardTitle>
+                          </CardHeader>
+                          <CardContent className="p-4 pt-0 space-y-2">
+                            <div className="space-y-1.5">
+                              {sc.solutions.map((sol, sIdx) => (
+                                <div key={sIdx} className="p-2 rounded-md bg-white text-green-800 text-[10px] font-medium border border-green-100 flex gap-1.5 shadow-sm leading-tight">
+                                  <ChevronRight className="h-2.5 w-2.5 shrink-0 mt-0.5 text-green-400" />
+                                  {sol}
+                                </div>
+                              ))}
                             </div>
                           </CardContent>
                         </Card>
