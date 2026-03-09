@@ -7,7 +7,6 @@ import {
   Loader2, 
   Download, 
   Target, 
-  FileText,
   ImageIcon,
   Code,
   ArrowDown,
@@ -99,12 +98,6 @@ export default function MindMapsPage() {
     }
   };
 
-  const exportAsPDF = () => {
-    if (!results) return;
-    // Native print is the most reliable PDF export method without jspdf
-    window.print();
-  };
-
   return (
     <div className="space-y-8 pb-20">
       <div className="grid gap-6 lg:grid-cols-3 no-print">
@@ -165,9 +158,6 @@ export default function MindMapsPage() {
             </Button>
             <Button variant="outline" className="justify-start gap-2 h-11" onClick={exportAsSVG} disabled={!results}>
               <Code className="h-4 w-4 text-chart-3" /> Download SVG
-            </Button>
-            <Button variant="outline" className="justify-start gap-2 h-11" onClick={exportAsPDF} disabled={!results}>
-              <FileText className="h-4 w-4 text-chart-3" /> Export as PDF (Print)
             </Button>
           </CardContent>
         </Card>
