@@ -61,10 +61,25 @@ const generateMindMapFlow = ai.defineFlow(
     outputSchema: MindMapOutputSchema,
   },
   async input => {
-    const {output} = await mindMapPrompt(input);
-    if (!output) {
-      throw new Error('The AI was unable to generate a valid analytical map. Please try a more specific problem statement.');
+    let attempts = 0;
+    const maxAttempts = 3;
+    while (attempts < maxAttempts) {
+      try {
+        const {output} = await mindMapPrompt(input);
+        if (!output) {
+          throw new Error('The AI was unable to generate a valid analytical map. Please try a more specific problem statement.');
+        }
+        return output;
+      } catch (error: any) {
+        attempts++;
+        const isRateLimit = error.message?.includes('429') || error.message?.includes('RESOURCE_EXHAUSTED');
+        if (attempts >= maxAttempts || !isRateLimit) {
+          throw error;
+        }
+        // Wait with exponential backoff before retrying
+        await new Promise(resolve => setTimeout(resolve, 3000 * attempts));
+      }
     }
-    return output;
+    throw new Error('The AI service is currently at capacity. Please wait a few seconds and try again.');
   }
 );

@@ -81,7 +81,24 @@ const aiDataProfilingFlow = ai.defineFlow(
     outputSchema: AIDataProfilingOutputSchema,
   },
   async (input) => {
-    const {output} = await aiDataProfilingPrompt(input);
-    return output!;
+    let attempts = 0;
+    const maxAttempts = 3;
+    while (attempts < maxAttempts) {
+      try {
+        const {output} = await aiDataProfilingPrompt(input);
+        if (!output) {
+          throw new Error('Failed to profile dataset.');
+        }
+        return output;
+      } catch (error: any) {
+        attempts++;
+        const isRateLimit = error.message?.includes('429') || error.message?.includes('RESOURCE_EXHAUSTED');
+        if (attempts >= maxAttempts || !isRateLimit) {
+          throw error;
+        }
+        await new Promise(resolve => setTimeout(resolve, 2000 * attempts));
+      }
+    }
+    throw new Error('AI service is currently busy. Please try again in a moment.');
   }
 );

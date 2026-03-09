@@ -74,11 +74,25 @@ const aiVisualizationRecommendationFlow = ai.defineFlow(
     outputSchema: AIVisualizationRecommendationOutputSchema,
   },
   async input => {
-    const {output} = await aiVisualizationRecommendationPrompt(input);
-    if (!output) {
-      throw new Error('Failed to get visualization recommendations.');
+    let attempts = 0;
+    const maxAttempts = 3;
+    while (attempts < maxAttempts) {
+      try {
+        const {output} = await aiVisualizationRecommendationPrompt(input);
+        if (!output) {
+          throw new Error('Failed to get visualization recommendations.');
+        }
+        return output;
+      } catch (error: any) {
+        attempts++;
+        const isRateLimit = error.message?.includes('429') || error.message?.includes('RESOURCE_EXHAUSTED');
+        if (attempts >= maxAttempts || !isRateLimit) {
+          throw error;
+        }
+        await new Promise(resolve => setTimeout(resolve, 2000 * attempts));
+      }
     }
-    return output;
+    throw new Error('The AI recommendation service is currently busy. Please try again shortly.');
   }
 );
 
