@@ -264,18 +264,18 @@ export default function MindMapsPage() {
                             </CardContent>
                           </Card>
 
-                          {/* Action Connector */}
+                          {/* Action Connector - INCREASED WIDTH/HEIGHT FOR SPACE */}
                           <div className={cn(
-                            "flex items-center justify-center",
-                            layout === 'vertical' ? "h-16 w-full" : "w-16 h-full absolute top-1/2 left-full -translate-y-1/2"
+                            "flex items-center justify-center z-0",
+                            layout === 'vertical' ? "h-24 w-full" : "w-24 h-full absolute top-1/2 left-full -translate-y-1/2"
                           )}>
                             <div className={cn(
                               "bg-orange-300 relative",
-                              layout === 'vertical' ? "w-0.5 h-full" : "h-0.5 w-full"
+                              layout === 'vertical' ? "w-1 h-full" : "h-1 w-full"
                             )}>
                               <div className={cn(
-                                "absolute text-orange-300 flex items-center justify-center scale-90",
-                                layout === 'vertical' ? "bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2" : "right-0 top-1/2 -translate-y-1/2 translate-x-1/2"
+                                "absolute text-orange-400 flex items-center justify-center bg-slate-50",
+                                layout === 'vertical' ? "bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 rounded-full p-1 border border-orange-200" : "right-0 top-1/2 -translate-y-1/2 translate-x-1/2 rounded-full p-1 border border-orange-200"
                               )}>
                                 {layout === 'vertical' ? <ChevronDown className="h-5 w-5 fill-current" /> : <ChevronRight className="h-5 w-5 fill-current" />}
                               </div>
