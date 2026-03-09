@@ -165,14 +165,17 @@ export default function MindMapsPage() {
       </div>
 
       {results ? (
-        <div ref={mindMapRef} className="p-16 bg-slate-50 rounded-2xl border shadow-inner overflow-x-auto min-w-full print-container">
+        <div ref={mindMapRef} className="p-20 bg-slate-50 rounded-2xl border shadow-inner overflow-x-auto min-w-full print-container">
           <div className={cn(
             "flex items-center justify-center min-w-max",
             layout === 'vertical' ? "flex-col" : "flex-row"
           )}>
             {/* Stage 1: Central Problem */}
-            <div className="relative z-20">
-              <div className="mindmap-node bg-chart-3 text-white p-10 rounded-2xl shadow-xl border-4 border-white w-96 text-center mx-auto ring-8 ring-chart-3/10">
+            <div className={cn(
+              "flex items-center",
+              layout === 'vertical' ? "flex-col" : "flex-row"
+            )}>
+              <div className="mindmap-node bg-chart-3 text-white p-10 rounded-2xl shadow-xl border-4 border-white w-96 text-center z-10 ring-8 ring-chart-3/10">
                 <span className="text-[10px] font-bold uppercase tracking-[0.3em] opacity-80 mb-3 block">Core Objective</span>
                 <h2 className="text-2xl font-headline font-bold leading-tight">{results.centralProblem}</h2>
               </div>
@@ -180,25 +183,22 @@ export default function MindMapsPage() {
               {/* Central Connector */}
               <div className={cn(
                 "flex items-center justify-center",
-                layout === 'vertical' ? "h-24 w-full" : "w-24 h-full absolute top-1/2 left-full -translate-y-1/2"
+                layout === 'vertical' ? "h-32 w-full" : "w-32 h-full"
               )}>
                 <div className={cn(
-                  "bg-chart-3 relative",
+                  "bg-chart-3 relative flex items-center justify-center",
                   layout === 'vertical' ? "w-1 h-full" : "h-1 w-full"
                 )}>
-                  <div className={cn(
-                    "absolute text-chart-3 flex items-center justify-center",
-                    layout === 'vertical' ? "bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2" : "right-0 top-1/2 -translate-y-1/2 translate-x-1/2"
-                  )}>
-                    {layout === 'vertical' ? <ChevronDown className="h-6 w-6 fill-current" /> : <ChevronRight className="h-6 w-6 fill-current" />}
+                  <div className="absolute bg-slate-50 p-2 rounded-full border-2 border-chart-3 text-chart-3 shadow-sm z-20">
+                    {layout === 'vertical' ? <ChevronDown className="h-8 w-8" /> : <ChevronRight className="h-8 w-8" />}
                   </div>
                 </div>
               </div>
             </div>
 
             <div className={cn(
-              "flex gap-24",
-              layout === 'vertical' ? "flex-row flex-nowrap pt-8" : "flex-col flex-nowrap pl-8"
+              "flex",
+              layout === 'vertical' ? "flex-row gap-32 pt-8" : "flex-col gap-32 pl-8"
             )}>
               {results.perspectives.map((perspective, pIdx) => (
                 <div key={pIdx} className={cn(
@@ -206,34 +206,34 @@ export default function MindMapsPage() {
                   layout === 'vertical' ? "flex-col" : "flex-row"
                 )}>
                   {/* Stage 2: Perspective */}
-                  <div className="relative group">
-                    <div className="mindmap-node bg-white border-2 border-chart-3 p-6 rounded-xl shadow-lg w-72 text-center z-10 relative">
-                      <span className="text-[9px] font-bold uppercase tracking-widest text-chart-3 block mb-2">Analytical Perspective</span>
-                      <h3 className="font-headline font-bold text-lg text-slate-800">{perspective.perspectiveName}</h3>
+                  <div className={cn(
+                    "flex items-center",
+                    layout === 'vertical' ? "flex-col" : "flex-row"
+                  )}>
+                    <div className="mindmap-node bg-white border-4 border-chart-3 p-8 rounded-xl shadow-lg w-72 text-center z-10 relative">
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-chart-3 block mb-2">Perspective</span>
+                      <h3 className="font-headline font-bold text-xl text-slate-800">{perspective.perspectiveName}</h3>
                     </div>
                     
                     {/* Perspective Connector */}
                     <div className={cn(
                       "flex items-center justify-center",
-                      layout === 'vertical' ? "h-20 w-full" : "w-20 h-full absolute top-1/2 left-full -translate-y-1/2"
+                      layout === 'vertical' ? "h-32 w-full" : "w-32 h-full"
                     )}>
                       <div className={cn(
-                        "bg-chart-3/40 relative",
+                        "bg-chart-3/40 relative flex items-center justify-center",
                         layout === 'vertical' ? "w-0.5 h-full" : "h-0.5 w-full"
                       )}>
-                        <div className={cn(
-                          "absolute text-chart-3/40 flex items-center justify-center scale-75",
-                          layout === 'vertical' ? "bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2" : "right-0 top-1/2 -translate-y-1/2 translate-x-1/2"
-                        )}>
-                          {layout === 'vertical' ? <ChevronDown className="h-5 w-5 fill-current" /> : <ChevronRight className="h-5 w-5 fill-current" />}
+                        <div className="absolute bg-slate-50 p-1.5 rounded-full border border-chart-3/40 text-chart-3/60 shadow-sm z-20">
+                          {layout === 'vertical' ? <ChevronDown className="h-6 w-6" /> : <ChevronRight className="h-6 w-6" />}
                         </div>
                       </div>
                     </div>
                   </div>
 
                   <div className={cn(
-                    "flex gap-16",
-                    layout === 'vertical' ? "flex-row pt-8" : "flex-col pl-8"
+                    "flex",
+                    layout === 'vertical' ? "flex-row gap-24 pt-8" : "flex-col gap-24 pl-8"
                   )}>
                     {perspective.subCauses.map((sc, scIdx) => (
                       <div key={scIdx} className={cn(
@@ -241,21 +241,24 @@ export default function MindMapsPage() {
                         layout === 'vertical' ? "flex-col" : "flex-row"
                       )}>
                         {/* Stage 3: Analysis Card (Causes) */}
-                        <div className="relative">
-                          <Card className="mindmap-node border-l-8 border-l-orange-500 shadow-xl w-80 transition-all hover:scale-[1.03] bg-white z-10 relative">
-                            <CardHeader className="p-5 pb-3">
-                              <span className="text-[10px] font-bold uppercase text-orange-600 tracking-widest block mb-1">Sub-cause Analysis</span>
-                              <CardTitle className="text-base font-bold leading-tight text-slate-900">{sc.causeName}</CardTitle>
+                        <div className={cn(
+                          "flex items-center",
+                          layout === 'vertical' ? "flex-col" : "flex-row"
+                        )}>
+                          <Card className="mindmap-node border-l-[12px] border-l-orange-500 shadow-2xl w-80 bg-white z-10 relative">
+                            <CardHeader className="p-6 pb-4">
+                              <span className="text-[10px] font-bold uppercase text-orange-600 tracking-widest block mb-1">Investigation</span>
+                              <CardTitle className="text-lg font-bold leading-tight text-slate-900">{sc.causeName}</CardTitle>
                             </CardHeader>
-                            <CardContent className="p-5 pt-0 space-y-4">
-                              <div className="space-y-2.5">
-                                <span className="text-[10px] font-bold uppercase text-muted-foreground tracking-tighter flex items-center gap-1.5">
-                                  <Trello className="h-3.5 w-3.5" /> Root Factor Investigation
+                            <CardContent className="p-6 pt-0 space-y-5">
+                              <div className="space-y-3">
+                                <span className="text-[11px] font-bold uppercase text-muted-foreground tracking-tighter flex items-center gap-1.5">
+                                  <Trello className="h-4 w-4" /> Root Factors
                                 </span>
-                                <ul className="space-y-2">
+                                <ul className="space-y-3">
                                   {sc.rootCauses.map((rc, rcIdx) => (
-                                    <li key={rcIdx} className="text-xs text-slate-600 flex gap-2.5 leading-relaxed bg-orange-50/50 p-2 rounded-md border border-orange-100/50">
-                                      <div className="h-2 w-2 rounded-full bg-orange-400 mt-1 shrink-0" />
+                                    <li key={rcIdx} className="text-xs text-slate-700 flex gap-3 leading-relaxed bg-orange-50/70 p-3 rounded-lg border border-orange-100/50 shadow-sm">
+                                      <div className="h-2 w-2 rounded-full bg-orange-400 mt-1.5 shrink-0" />
                                       {rc}
                                     </li>
                                   ))}
@@ -264,38 +267,35 @@ export default function MindMapsPage() {
                             </CardContent>
                           </Card>
 
-                          {/* Action Connector - INCREASED WIDTH/HEIGHT FOR SPACE */}
+                          {/* Action Connector - FIXED Inline Width/Height to avoid overlap */}
                           <div className={cn(
-                            "flex items-center justify-center z-0",
-                            layout === 'vertical' ? "h-24 w-full" : "w-24 h-full absolute top-1/2 left-full -translate-y-1/2"
+                            "flex items-center justify-center",
+                            layout === 'vertical' ? "h-32 w-full" : "w-32 h-full"
                           )}>
                             <div className={cn(
-                              "bg-orange-300 relative",
+                              "bg-orange-300 relative flex items-center justify-center",
                               layout === 'vertical' ? "w-1 h-full" : "h-1 w-full"
                             )}>
-                              <div className={cn(
-                                "absolute text-orange-400 flex items-center justify-center bg-slate-50",
-                                layout === 'vertical' ? "bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 rounded-full p-1 border border-orange-200" : "right-0 top-1/2 -translate-y-1/2 translate-x-1/2 rounded-full p-1 border border-orange-200"
-                              )}>
-                                {layout === 'vertical' ? <ChevronDown className="h-5 w-5 fill-current" /> : <ChevronRight className="h-5 w-5 fill-current" />}
+                              <div className="absolute bg-white p-2.5 rounded-full border-2 border-orange-400 text-orange-600 shadow-md z-20">
+                                {layout === 'vertical' ? <ChevronDown className="h-8 w-8 font-bold" /> : <ChevronRight className="h-8 w-8 font-bold" />}
                               </div>
                             </div>
                           </div>
                         </div>
 
                         {/* Stage 4: Action Card (Solutions) */}
-                        <Card className="mindmap-node border-l-8 border-l-green-600 shadow-xl w-80 transition-all hover:scale-[1.03] bg-green-50/20 border-green-100">
-                          <CardHeader className="p-5 pb-3">
+                        <Card className="mindmap-node border-l-[12px] border-l-green-600 shadow-2xl w-80 bg-green-50/10 border-green-100 z-10">
+                          <CardHeader className="p-6 pb-4">
                             <span className="text-[10px] font-bold uppercase text-green-700 tracking-[0.2em] flex items-center gap-2">
-                              <ClipboardCheck className="h-4 w-4" /> Tactical Response
+                              <ClipboardCheck className="h-5 w-5" /> Strategic Solution
                             </span>
-                            <CardTitle className="text-[11px] text-green-800/70 font-bold italic tracking-wide">Actionable Solutions</CardTitle>
+                            <CardTitle className="text-xs text-green-800/80 font-bold italic tracking-wide mt-1">Recommended Actions</CardTitle>
                           </CardHeader>
-                          <CardContent className="p-5 pt-0 space-y-3">
-                            <div className="space-y-2.5">
+                          <CardContent className="p-6 pt-0 space-y-4">
+                            <div className="space-y-3">
                               {sc.solutions.map((sol, sIdx) => (
-                                <div key={sIdx} className="p-3 rounded-lg bg-white text-green-900 text-[11px] font-bold border border-green-200 flex gap-2 shadow-sm leading-normal ring-1 ring-green-50">
-                                  <ChevronRight className="h-3 w-3 shrink-0 mt-0.5 text-green-500" />
+                                <div key={sIdx} className="p-4 rounded-xl bg-white text-green-900 text-xs font-bold border-2 border-green-200/50 flex gap-3 shadow-sm leading-relaxed ring-1 ring-green-50/50">
+                                  <ChevronRight className="h-4 w-4 shrink-0 mt-0.5 text-green-500" />
                                   {sol}
                                 </div>
                               ))}
