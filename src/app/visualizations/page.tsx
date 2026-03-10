@@ -1,16 +1,13 @@
 'use client';
 
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   Sparkles, 
   Loader2, 
-  Lightbulb, 
   Settings2, 
   Layers,
   Wand2,
-  CheckCircle2,
-  Info
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -31,6 +28,7 @@ import { useToast } from '@/hooks/use-toast';
 
 export default function VisualizationsPage() {
   const { toast } = useToast();
+  const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     tool: 'Excel' as any,
@@ -39,6 +37,11 @@ export default function VisualizationsPage() {
     purpose: 'Trend over time' as any
   });
   const [results, setResults] = useState<AIVisualizationRecommendationOutput | null>(null);
+
+  // Prevent hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleDataTypeChange = (type: string, checked: boolean) => {
     setFormData(prev => ({
@@ -60,12 +63,24 @@ export default function VisualizationsPage() {
       const output = await aiVisualizationRecommendation(formData);
       setResults(output);
       toast({ title: "Analysis Complete", description: "Generated custom recommendations for your tool." });
-    } catch (error) {
-      toast({ title: "Error", description: "Failed to generate recommendations.", variant: "destructive" });
+    } catch (error: any) {
+      toast({ 
+        title: "Error", 
+        description: error.message || "Failed to generate recommendations.", 
+        variant: "destructive" 
+      });
     } finally {
       setLoading(false);
     }
   };
+
+  if (!mounted) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
 
   return (
     <div className="grid gap-8 lg:grid-cols-12 items-start">

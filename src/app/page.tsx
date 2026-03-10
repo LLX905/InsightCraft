@@ -1,12 +1,27 @@
 'use client';
 
 import * as React from 'react';
+import { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { BarChart3, GitGraph, Sparkles } from 'lucide-react';
+import { BarChart3, GitGraph, Sparkles, Loader2 } from 'lucide-react';
 import VisualizationsPage from '@/app/visualizations/page';
 import MindMapsPage from '@/app/mind-maps/page';
 
 export default function AppHome() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="h-12 w-12 animate-spin text-primary opacity-20" />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b bg-card py-4 px-6 sticky top-0 z-50 shadow-sm no-print">

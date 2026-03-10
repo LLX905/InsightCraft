@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { 
   Sparkles, 
   Loader2, 
@@ -17,7 +17,6 @@ import {
   CheckCircle2,
   AlertCircle
 } from 'lucide-react';
-import { toPng, toSvg } from 'html-to-image';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -30,11 +29,17 @@ import { cn } from '@/lib/utils';
 
 export default function MindMapsPage() {
   const { toast } = useToast();
+  const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [problem, setProblem] = useState("Why is my business revenue declining?");
   const [layout, setLayout] = useState<'horizontal' | 'vertical'>('horizontal');
   const [results, setResults] = useState<MindMapOutput | null>(null);
   const mindMapRef = useRef<HTMLDivElement>(null);
+
+  // Prevent hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleGenerate = async () => {
     if (!problem.trim()) return;
@@ -73,13 +78,15 @@ export default function MindMapsPage() {
         margin: '0',
       },
       cacheBust: true,
-      skipFonts: true // Prevents cross-origin CSS rules error
+      skipFonts: true
     };
   };
 
   const exportAsPNG = async () => {
     if (!mindMapRef.current) return;
     try {
+      // Dynamic import to avoid SSR issues
+      const { toPng } = await import('html-to-image');
       const dataUrl = await toPng(mindMapRef.current, getExportOptions());
       const link = document.createElement('a');
       link.download = `mind-map-${Date.now()}.png`;
@@ -93,6 +100,8 @@ export default function MindMapsPage() {
   const exportAsSVG = async () => {
     if (!mindMapRef.current) return;
     try {
+      // Dynamic import to avoid SSR issues
+      const { toSvg } = await import('html-to-image');
       const dataUrl = await toSvg(mindMapRef.current, getExportOptions());
       const link = document.createElement('a');
       link.download = `mind-map-${Date.now()}.svg`;
@@ -118,6 +127,14 @@ export default function MindMapsPage() {
       </div>
     </div>
   );
+
+  if (!mounted) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8 pb-20">

@@ -85,10 +85,13 @@ const aiVisualizationRecommendationFlow = ai.defineFlow(
         return output;
       } catch (error: any) {
         attempts++;
-        const isRateLimit = error.message?.includes('429') || error.message?.includes('RESOURCE_EXHAUSTED');
+        const errorMessage = error.message || '';
+        const isRateLimit = errorMessage.includes('429') || errorMessage.includes('RESOURCE_EXHAUSTED') || errorMessage.includes('quota');
+        
         if (attempts >= maxAttempts || !isRateLimit) {
           throw error;
         }
+        // Wait with exponential backoff before retrying
         await new Promise(resolve => setTimeout(resolve, 2000 * attempts));
       }
     }
