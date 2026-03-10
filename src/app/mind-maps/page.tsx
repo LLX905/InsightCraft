@@ -8,7 +8,6 @@ import {
   Download, 
   Target, 
   ImageIcon,
-  FileText,
   Layout as LayoutIcon,
   ChevronRight,
   ArrowRight,
@@ -217,10 +216,7 @@ export default function MindMapsPage() {
           </CardHeader>
           <CardContent className="grid grid-cols-1 gap-3">
             <Button variant="outline" className="justify-start gap-2 h-10" onClick={exportAsPNG} disabled={!results}>
-              <ImageIcon className="h-4 w-4" /> Export Pages (PNG)
-            </Button>
-            <Button variant="outline" className="justify-start gap-2 h-10" onClick={() => window.print()} disabled={!results}>
-              <FileText className="h-4 w-4" /> Print to PDF
+              <ImageIcon className="h-4 w-4" /> Export All Pages (PNG)
             </Button>
           </CardContent>
         </Card>
