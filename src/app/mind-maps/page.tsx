@@ -1,8 +1,7 @@
-
 'use client';
 
 import * as React from 'react';
-import { useState, useRef, useEffect, useMemo } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { 
   Sparkles, 
   Loader2, 
@@ -60,7 +59,7 @@ const Node = ({
   return (
     <div 
       className={cn(
-        "flex flex-col justify-center items-center text-center p-4 rounded-xl border-2 shadow-sm shrink-0 overflow-hidden",
+        "flex flex-col justify-center items-center text-center p-4 rounded-xl border-2 shadow-sm shrink-0 overflow-hidden mindmap-node",
         spec.color,
         className
       )}
@@ -84,37 +83,6 @@ const Node = ({
       </p>
       {children}
     </div>
-  );
-};
-
-const CurvedConnector = ({ 
-  start, 
-  end, 
-  orientation 
-}: { 
-  start: { x: number, y: number }, 
-  end: { x: number, y: number }, 
-  orientation: Orientation 
-}) => {
-  const d = useMemo(() => {
-    if (orientation === 'horizontal') {
-      const midX = (start.x + end.x) / 2;
-      return `M ${start.x} ${start.y} C ${midX} ${start.y}, ${midX} ${end.y}, ${end.x} ${end.y}`;
-    } else {
-      const midY = (start.y + end.y) / 2;
-      return `M ${start.x} ${start.y} C ${start.x} ${midY}, ${end.x} ${midY}, ${end.x} ${end.y}`;
-    }
-  }, [start, end, orientation]);
-
-  return (
-    <path 
-      d={d} 
-      fill="none" 
-      stroke="#cbd5e1" 
-      strokeWidth="2" 
-      strokeDasharray="4 4"
-      markerEnd="url(#arrowhead)"
-    />
   );
 };
 
@@ -164,15 +132,21 @@ export default function MindMapsPage() {
       
       for (let i = 0; i < pages.length; i++) {
         const page = pages[i] as HTMLElement;
+        const rect = page.getBoundingClientRect();
+        
         const dataUrl = await toPng(page, { 
           backgroundColor: '#f8fafc',
-          width: page.scrollWidth,
-          height: page.scrollHeight,
+          width: rect.width,
+          height: rect.height,
           style: {
             overflow: 'visible',
-            width: `${page.scrollWidth}px`,
-            height: `${page.scrollHeight}px`
-          }
+            width: `${rect.width}px`,
+            height: `${rect.height}px`,
+            margin: '0',
+            transform: 'none'
+          },
+          cacheBust: true,
+          pixelRatio: 2
         });
         
         const link = document.createElement('a');
@@ -259,23 +233,10 @@ export default function MindMapsPage() {
                style={{ 
                  minWidth: '1200px', 
                  padding: `${SPACING.padding}px`,
-                 width: 'auto'
+                 width: orientation === 'vertical' ? '1200px' : 'auto',
+                 height: 'auto'
                }}>
             
-            <svg className="absolute inset-0 w-full h-full pointer-events-none overflow-visible">
-              <defs>
-                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-                  <polygon points="0 0, 10 3.5, 0 7" fill="#cbd5e1" />
-                </marker>
-              </defs>
-              {/* L1 to L2 Connectors */}
-              {results.perspectives.map((_, i) => {
-                const l1Center = { x: 1200/2, y: 350 }; // Approximation for simplicity in render loop
-                // Real positions calculated by layout engine below
-                return null; 
-              })}
-            </svg>
-
             <div className="mb-12 text-center space-y-2 z-10">
               <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20 font-black uppercase tracking-widest px-4 py-1">
                 Phase 01: Strategic Overview
@@ -284,17 +245,22 @@ export default function MindMapsPage() {
             </div>
 
             <div className={cn(
-              "flex items-center justify-center gap-[120px]",
-              orientation === 'vertical' ? "flex-col" : "flex-row"
+              "flex items-center justify-center",
+              orientation === 'vertical' ? "flex-col gap-[100px]" : "flex-row gap-[120px]"
             )}>
-              <Node title={results.centralProblem} type="L1" />
+              <div className="relative">
+                <Node title={results.centralProblem} type="L1" />
+              </div>
               
               <div className={cn(
-                "flex gap-[40px]",
-                orientation === 'vertical' ? "flex-row" : "flex-col"
+                "flex justify-center",
+                orientation === 'vertical' ? "flex-row gap-[40px] flex-wrap" : "flex-col gap-[40px]"
               )}>
                 {results.perspectives.map((p, i) => (
-                  <Node key={i} title={p.name} type="L2" />
+                  <div key={i} className="flex items-center gap-4">
+                    {orientation === 'horizontal' && <ChevronRight className="h-6 w-6 text-slate-200" />}
+                    <Node title={p.name} type="L2" />
+                  </div>
                 ))}
               </div>
             </div>
@@ -310,7 +276,8 @@ export default function MindMapsPage() {
                  style={{ 
                    minWidth: '1200px', 
                    padding: `${SPACING.padding}px`,
-                   width: 'auto'
+                   width: orientation === 'vertical' ? '1200px' : 'auto',
+                   height: 'auto'
                  }}>
               
               <div className="flex items-center justify-between border-b border-slate-100 pb-8 mb-12">
@@ -327,8 +294,8 @@ export default function MindMapsPage() {
               </div>
 
               <div className={cn(
-                "flex grow items-center justify-center gap-[120px]",
-                orientation === 'vertical' ? "flex-col" : "flex-row"
+                "flex grow items-center justify-center",
+                orientation === 'vertical' ? "flex-col gap-[100px]" : "flex-row gap-[120px]"
               )}>
                 {/* Level 2 Context */}
                 <div className="flex flex-col items-center gap-4">
@@ -337,13 +304,13 @@ export default function MindMapsPage() {
 
                 {/* Level 3 & 4 Branches */}
                 <div className={cn(
-                  "flex gap-[60px]",
-                  orientation === 'vertical' ? "flex-row" : "flex-col"
+                  "flex grow justify-center",
+                  orientation === 'vertical' ? "flex-row gap-[60px] flex-wrap items-start" : "flex-col gap-[60px]"
                 )}>
                   {perspective.causes.map((cause, cIdx) => (
                     <div key={cIdx} className={cn(
-                      "flex items-center gap-[40px]",
-                      orientation === 'vertical' ? "flex-col" : "flex-row"
+                      "flex items-center",
+                      orientation === 'vertical' ? "flex-col gap-[40px]" : "flex-row gap-[40px]"
                     )}>
                       {/* L3: Cause */}
                       <Node title={cause.name} type="L3">
@@ -375,4 +342,3 @@ export default function MindMapsPage() {
     </div>
   );
 }
-
