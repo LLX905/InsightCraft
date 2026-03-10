@@ -62,17 +62,41 @@ export default function MindMapsPage() {
 
   const exportAsPNG = async () => {
     if (!containerRef.current) return;
+    
+    toast({
+      title: "Generating Image",
+      description: "Capturing all pages of the diagnostic framework...",
+    });
+
     try {
       const { toPng } = await import('html-to-image');
-      const dataUrl = await toPng(containerRef.current, { 
+      
+      // Calculate full dimensions to avoid cutoff
+      const node = containerRef.current;
+      const width = node.scrollWidth;
+      const height = node.scrollHeight;
+
+      const dataUrl = await toPng(node, { 
         backgroundColor: '#f8fafc',
         cacheBust: true,
+        width: width,
+        height: height,
+        style: {
+          transform: 'scale(1)',
+          transformOrigin: 'top left',
+          width: `${width}px`,
+          height: `${height}px`,
+          margin: '0',
+          padding: '40px' // Add some padding around the final export
+        }
       });
       
       const link = document.createElement('a');
-      link.download = `mind-map-full-${Date.now()}.png`;
+      link.download = `mind-map-analysis-${Date.now()}.png`;
       link.href = dataUrl;
       link.click();
+      
+      toast({ title: "Export Successful", description: "Image saved to your downloads." });
     } catch (err: any) {
       toast({ title: "Export Failed", description: err.message, variant: "destructive" });
     }
@@ -163,7 +187,7 @@ export default function MindMapsPage() {
       {results ? (
         <div ref={containerRef} className="space-y-12">
           {/* PAGE 1: OVERVIEW (Levels 1 & 2) */}
-          <div className="print-container bg-white border-2 border-slate-200 rounded-2xl p-12 shadow-sm min-h-[600px] flex flex-col items-center justify-center overflow-hidden">
+          <div className="print-container bg-white border-2 border-slate-200 rounded-2xl p-12 shadow-sm min-h-[600px] flex flex-col items-center justify-center overflow-visible">
             <div className="mb-8 text-center space-y-1">
               <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20 font-black uppercase tracking-widest px-4">
                 Analysis Stage 01: Strategic Overview
@@ -204,7 +228,7 @@ export default function MindMapsPage() {
 
           {/* DEEP DIVE PAGES (Levels 3 & 4) */}
           {results.perspectives.map((perspective, pIdx) => (
-            <div key={pIdx} className="print-container bg-white border-2 border-slate-200 rounded-2xl p-12 shadow-sm min-h-[800px] flex flex-col overflow-hidden">
+            <div key={pIdx} className="print-container bg-white border-2 border-slate-200 rounded-2xl p-12 shadow-sm min-h-[800px] flex flex-col overflow-visible">
               <div className="flex items-center justify-between border-b pb-6 mb-12">
                 <div className="space-y-1">
                   <Badge variant="outline" className="bg-slate-100 text-slate-700 border-slate-300 font-black uppercase tracking-widest px-4">
