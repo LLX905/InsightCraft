@@ -102,6 +102,17 @@
     background: white !important;
   }
 
+  .mind-map-page {
+    page-break-after: always !important;
+    break-after: page !important;
+    display: block !important;
+    width: 100% !important;
+    min-width: unset !important;
+    margin-bottom: 2rem !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
   .mindmap-node {
     break-inside: avoid;
     box-shadow: none !important;
