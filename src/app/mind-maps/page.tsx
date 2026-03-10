@@ -46,7 +46,7 @@ export default function MindMapsPage() {
     try {
       const output = await generateMindMap({ problem });
       setResults(output);
-      toast({ title: "Analysis Complete", description: "Structured 4-level map generated." });
+      toast({ title: "Analysis Complete", description: "MECE-structured 4-level map generated." });
     } catch (error: any) {
       toast({ 
         title: "Error", 
@@ -147,7 +147,7 @@ export default function MindMapsPage() {
               <Target className="h-5 w-5 text-primary" />
               Strategic Canvas
             </CardTitle>
-            <CardDescription>Enter a challenge to generate a category-based 4-level analysis.</CardDescription>
+            <CardDescription>Enter a challenge to generate a MECE-based 4-level analysis.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <Textarea 
