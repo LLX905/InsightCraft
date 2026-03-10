@@ -1,21 +1,27 @@
 'use server';
 /**
  * @fileOverview This file defines a Genkit flow for generating a structured 4-level mind map analysis.
+ * 
+ * Levels:
+ * 1. Core Problem
+ * 2. Perspectives (Categories)
+ * 3. Causes
+ * 4. Actions
  */
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
-const ActionSchema = z.string().describe('A possible solution or action (Level 4). Use 4-6 words max, no full sentences.');
+const ActionSchema = z.string().describe('A specific practical solution or action (Level 4). 4-6 words max.');
 
 const CauseSchema = z.object({
-  name: z.string().describe('A specific cause (Level 3). Use 4-6 words max, no full sentences.'),
-  actions: z.array(ActionSchema).min(2).describe('Strategic actions addressing this specific cause.'),
+  name: z.string().describe('A specific cause (Level 3). 4-6 words max.'),
+  actions: z.array(ActionSchema).min(2).max(4).describe('Practical actions addressing this specific cause.'),
 });
 
 const PerspectiveSchema = z.object({
-  name: z.string().describe('A major analytical perspective (Level 2). Use 4-6 words max, no full sentences.'),
-  causes: z.array(CauseSchema).min(3).describe('At least 3 specific causes contributing to the problem from this perspective.'),
+  name: z.string().describe('A major analytical perspective or category (Level 2). Use categories like External, Personal, Strategy, Network, etc.'),
+  causes: z.array(CauseSchema).min(3).max(5).describe('At least 3-5 specific causes contributing to the problem from this perspective.'),
 });
 
 const MindMapInputSchema = z.object({
@@ -24,8 +30,8 @@ const MindMapInputSchema = z.object({
 export type MindMapInput = z.infer<typeof MindMapInputSchema>;
 
 const MindMapOutputSchema = z.object({
-  centralProblem: z.string().describe('The restated core problem (Level 1). Use 4-6 words max.'),
-  perspectives: z.array(PerspectiveSchema).min(3).describe('3-5 major analytical perspectives.'),
+  centralProblem: z.string().describe('The restated core problem (Level 1). 4-6 words max.'),
+  perspectives: z.array(PerspectiveSchema).min(3).max(5).describe('3-5 major analytical perspectives/categories.'),
 });
 export type MindMapOutput = z.infer<typeof MindMapOutputSchema>;
 
@@ -37,18 +43,29 @@ const mindMapPrompt = ai.definePrompt({
   name: 'problemSolvingMindMapPrompt',
   input: {schema: MindMapInputSchema},
   output: {schema: MindMapOutputSchema},
-  prompt: `You are an expert strategic consultant. Analyze the given problem and generate a 4-level analytical mind map in JSON format.
+  prompt: `You are an expert strategic consultant. Analyze the given problem and generate a highly structured 4-level analytical mind map in JSON format.
+
+Thinking Framework:
+Group your analysis into clear categories such as:
+- External Environment (Market, Trends, Economics)
+- Personal Capability (Skills, Experience, Education)
+- Strategy (Positioning, Quality, Targeting)
+- Network (Connections, Referrals, Exposure)
+- Psychological Factors (Motivation, Burnout, Confidence)
 
 Constraints:
 1. Levels: 
-   - Level 1: Core Problem
-   - Level 2: Major Perspectives (3-5 perspectives)
-   - Level 3: Causes (At least 3 causes per perspective)
-   - Level 4: Actions/Solutions (Strategic actions per cause)
+   - Level 1: Core Problem (Dark Blue)
+   - Level 2: Major Perspectives (Grey - categories like the ones above)
+   - Level 3: Causes (White - specific root factors)
+   - Level 4: Actions (Green - specific practical next steps for each cause)
 2. Node Content:
    - Each node MUST contain no more than 4-6 words.
    - Avoid full sentences. Use short, punchy phrases.
    - Example: "Weak networking" instead of "Insufficient networking opportunities in the industry."
+3. Balance:
+   - Each Perspective (L2) MUST have 3-5 Causes (L3).
+   - Each Cause (L3) MUST lead to 2-4 practical Actions (L4).
 
 Problem Statement: {{{problem}}}`,
 });

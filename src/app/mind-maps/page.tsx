@@ -13,7 +13,8 @@ import {
   ChevronDown,
   Layout,
   Database,
-  CheckCircle2
+  CheckCircle2,
+  TrendingUp
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -45,7 +46,7 @@ export default function MindMapsPage() {
     try {
       const output = await generateMindMap({ problem });
       setResults(output);
-      toast({ title: "Analysis Complete", description: "4-level strategy map generated." });
+      toast({ title: "Analysis Complete", description: "Structured 4-level map generated." });
     } catch (error: any) {
       toast({ 
         title: "Error", 
@@ -61,8 +62,6 @@ export default function MindMapsPage() {
     if (!mindMapRef.current) return;
     try {
       const { toPng } = await import('html-to-image');
-      
-      // Calculate full dimensions to avoid clipping
       const width = mindMapRef.current.scrollWidth;
       const height = mindMapRef.current.scrollHeight;
 
@@ -91,8 +90,6 @@ export default function MindMapsPage() {
     if (!mindMapRef.current) return;
     try {
       const { toSvg } = await import('html-to-image');
-      
-      // Calculate full dimensions to avoid clipping
       const width = mindMapRef.current.scrollWidth;
       const height = mindMapRef.current.scrollHeight;
 
@@ -120,14 +117,14 @@ export default function MindMapsPage() {
   const Connector = ({ isVertical }: { isVertical: boolean }) => (
     <div className={cn(
       "flex items-center justify-center shrink-0",
-      isVertical ? "h-24 w-full" : "w-32 h-full"
+      isVertical ? "h-20 w-full" : "w-24 h-full"
     )}>
       <div className={cn(
         "bg-slate-300 relative flex items-center justify-center",
         isVertical ? "w-0.5 h-full" : "h-0.5 w-full"
       )}>
-        <div className="absolute bg-white border border-slate-400 rounded-full p-2 shadow-sm z-20">
-          {isVertical ? <ChevronDown className="h-4 w-4 text-primary" /> : <ChevronRight className="h-4 w-4 text-primary" />}
+        <div className="absolute bg-white border border-slate-300 rounded-full p-1.5 shadow-sm z-20">
+          {isVertical ? <ChevronDown className="h-3.5 w-3.5 text-primary" /> : <ChevronRight className="h-3.5 w-3.5 text-primary" />}
         </div>
       </div>
     </div>
@@ -150,7 +147,7 @@ export default function MindMapsPage() {
               <Target className="h-5 w-5 text-primary" />
               Strategic Canvas
             </CardTitle>
-            <CardDescription>Enter a challenge to generate a concise 4-level analysis.</CardDescription>
+            <CardDescription>Enter a challenge to generate a category-based 4-level analysis.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <Textarea 
@@ -204,9 +201,9 @@ export default function MindMapsPage() {
             "flex items-center min-w-max",
             layout === 'vertical' ? "flex-col" : "flex-row"
           )}>
-            {/* LEVEL 1: Problem */}
+            {/* LEVEL 1: Problem (Dark Blue) */}
             <div className={cn("flex items-center shrink-0", layout === 'vertical' ? "flex-col" : "flex-row")}>
-              <div className="mindmap-node bg-slate-900 text-white p-8 rounded-lg shadow-2xl w-72 text-center z-10 border-2 border-slate-700">
+              <div className="mindmap-node bg-slate-900 text-white p-8 rounded-lg shadow-2xl w-80 text-center z-10 border-2 border-slate-700">
                 <span className="text-[10px] font-black uppercase tracking-widest opacity-60 mb-3 block">Level 1: Problem</span>
                 <h2 className="text-xl font-headline font-bold leading-tight uppercase tracking-tight">{results.centralProblem}</h2>
               </div>
@@ -218,9 +215,9 @@ export default function MindMapsPage() {
                 <div key={pIdx} className={cn("flex items-center shrink-0", layout === 'vertical' ? "flex-col" : "flex-row")}>
                   <Connector isVertical={layout === 'vertical'} />
 
-                  {/* LEVEL 2: Perspective */}
+                  {/* LEVEL 2: Perspective (Medium Grey) */}
                   <div className={cn("flex items-center", layout === 'vertical' ? "flex-col" : "flex-row")}>
-                    <div className="mindmap-node bg-slate-200 border-2 border-slate-300 p-6 rounded-lg shadow-lg w-64 text-center z-10">
+                    <div className="mindmap-node bg-slate-200 border-2 border-slate-300 p-6 rounded-lg shadow-lg w-72 text-center z-10">
                       <span className="text-[10px] font-black uppercase tracking-widest text-slate-500 block mb-2">Level 2: Perspective</span>
                       <h3 className="font-bold text-base text-slate-800">{perspective.name}</h3>
                     </div>
@@ -232,8 +229,8 @@ export default function MindMapsPage() {
                       <div key={cIdx} className={cn("flex items-center", layout === 'vertical' ? "flex-col" : "flex-row")}>
                         <Connector isVertical={layout === 'vertical'} />
                         
-                        {/* LEVEL 3: Cause */}
-                        <div className="mindmap-node bg-white border-2 border-slate-200 p-6 rounded-lg shadow-md w-60 z-10 shrink-0">
+                        {/* LEVEL 3: Cause (White) */}
+                        <div className="mindmap-node bg-white border-2 border-slate-200 p-6 rounded-lg shadow-md w-64 z-10 shrink-0">
                           <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest block mb-3 flex items-center gap-1">
                             <Database className="h-4 w-4" /> Level 3: Cause
                           </span>
@@ -242,15 +239,15 @@ export default function MindMapsPage() {
 
                         <Connector isVertical={layout === 'vertical'} />
 
-                        {/* LEVEL 4: Actions */}
-                        <div className="mindmap-node bg-emerald-50 border-2 border-emerald-500 p-6 rounded-lg shadow-xl w-64 z-10 shrink-0">
+                        {/* LEVEL 4: Actions (Green) */}
+                        <div className="mindmap-node bg-emerald-50 border-2 border-emerald-500 p-6 rounded-lg shadow-xl w-72 z-10 shrink-0">
                           <span className="text-[10px] font-black uppercase text-emerald-700 tracking-widest flex items-center gap-1 mb-4">
-                            <CheckCircle2 className="h-4 w-4" /> Level 4: Actions
+                            <CheckCircle2 className="h-4 w-4" /> Level 4: Action Plan
                           </span>
-                          <div className="space-y-3">
+                          <div className="space-y-2">
                             {cause.actions.map((action, aIdx) => (
                               <div key={aIdx} className="text-xs font-bold text-emerald-900 bg-white p-3 rounded-md border border-emerald-100 shadow-sm leading-tight flex items-start gap-2">
-                                <span className="text-emerald-500 mt-0.5">•</span>
+                                <TrendingUp className="h-3 w-3 text-emerald-500 mt-0.5 shrink-0" />
                                 {action}
                               </div>
                             ))}
@@ -268,7 +265,7 @@ export default function MindMapsPage() {
         <div className="flex flex-col items-center justify-center py-40 text-center text-muted-foreground opacity-20">
           <Layout className="h-16 w-16 mb-4" />
           <h3 className="text-xl font-headline font-bold">Awaiting Analysis</h3>
-          <p className="text-sm">Enter your problem to see the 4-level strategy flow.</p>
+          <p className="text-sm">Enter your problem to see the structured 4-level strategy flow.</p>
         </div>
       )}
     </div>
