@@ -234,23 +234,23 @@ export default function VisualizationsPage() {
                     <div className="space-y-6">
                       <div className="p-5 rounded-2xl bg-blue-50/50 border border-blue-100">
                         <span className="text-[10px] font-black uppercase text-blue-600 tracking-[0.2em] flex items-center gap-2 mb-4">
-                          <LayoutIcon className="h-3 w-3" /> Dashboard Layout
+                          <LayoutIcon className="h-3 w-3" /> Suggested Dashboard Layout
                         </span>
                         <div className="space-y-3">
-                          <div className="flex justify-between text-xs border-b border-blue-100 pb-2">
-                            <span className="font-bold text-blue-800">Top:</span>
+                          <div className="flex items-start gap-2 text-xs border-b border-blue-100 pb-2">
+                            <span className="font-bold text-blue-800 min-w-[60px]">Top:</span>
                             <span className="text-slate-600">{results.primaryRecommendation.dashboardLayout.top}</span>
                           </div>
-                          <div className="flex justify-between text-xs border-b border-blue-100 pb-2">
-                            <span className="font-bold text-blue-800">Center:</span>
+                          <div className="flex items-start gap-2 text-xs border-b border-blue-100 pb-2">
+                            <span className="font-bold text-blue-800 min-w-[60px]">Center:</span>
                             <span className="text-slate-600">{results.primaryRecommendation.dashboardLayout.center}</span>
                           </div>
-                          <div className="flex justify-between text-xs border-b border-blue-100 pb-2">
-                            <span className="font-bold text-blue-800">Right:</span>
+                          <div className="flex items-start gap-2 text-xs border-b border-blue-100 pb-2">
+                            <span className="font-bold text-blue-800 min-w-[60px]">Right:</span>
                             <span className="text-slate-600">{results.primaryRecommendation.dashboardLayout.right}</span>
                           </div>
-                          <div className="flex justify-between text-xs pt-1">
-                            <span className="font-bold text-blue-800">Bottom:</span>
+                          <div className="flex items-start gap-2 text-xs pt-1">
+                            <span className="font-bold text-blue-800 min-w-[60px]">Bottom:</span>
                             <span className="text-slate-600">{results.primaryRecommendation.dashboardLayout.bottom}</span>
                           </div>
                         </div>
