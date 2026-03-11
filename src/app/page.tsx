@@ -51,10 +51,10 @@ export default function AppHome() {
         <div className="max-w-4xl w-full space-y-12 px-6 py-20 flex-grow flex flex-col justify-center">
           {/* Hero Header */}
           <div className="text-center space-y-4">
-            <div className="inline-flex items-center gap-3 bg-white px-4 py-2 rounded-2xl shadow-sm border border-slate-100 mb-4 mx-auto">
-              <Sparkles className="h-6 w-6 text-primary" />
-              <div className="flex flex-col items-start">
-                <span className="font-headline font-bold text-xl text-primary tracking-tight">InsightCraft</span>
+            <div className="inline-flex items-center gap-3 bg-white px-6 py-3 rounded-2xl shadow-sm border border-slate-100 mb-4 mx-auto">
+              <Sparkles className="h-6 w-6 text-primary shrink-0" />
+              <div className="flex flex-col items-center">
+                <span className="font-headline font-bold text-2xl text-primary tracking-tight">InsightCraft</span>
                 <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">From Data to Insight</span>
               </div>
             </div>
@@ -72,8 +72,8 @@ export default function AppHome() {
               className="group cursor-pointer border-2 border-transparent hover:border-primary transition-all shadow-xl hover:shadow-2xl bg-card/50 backdrop-blur-sm"
               onClick={() => setView('viz')}
             >
-              <CardHeader className="space-y-4 p-8">
-                <div className="bg-primary/10 w-16 h-16 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+              <CardHeader className="space-y-4 p-8 text-center md:text-left">
+                <div className="bg-primary/10 w-16 h-16 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform mx-auto md:mx-0">
                   <BarChart3 className="h-8 w-8 text-primary" />
                 </div>
                 <div>
@@ -83,7 +83,7 @@ export default function AppHome() {
                   </CardDescription>
                 </div>
               </CardHeader>
-              <CardContent className="p-8 pt-0 flex items-center text-primary font-bold gap-2">
+              <CardContent className="p-8 pt-0 flex items-center justify-center md:justify-start text-primary font-bold gap-2">
                 Open Engine <ArrowRight className="h-4 w-4" />
               </CardContent>
             </Card>
@@ -92,8 +92,8 @@ export default function AppHome() {
               className="group cursor-pointer border-2 border-transparent hover:border-chart-3 transition-all shadow-xl hover:shadow-2xl bg-card/50 backdrop-blur-sm"
               onClick={() => setView('mind')}
             >
-              <CardHeader className="space-y-4 p-8">
-                <div className="bg-chart-3/10 w-16 h-16 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+              <CardHeader className="space-y-4 p-8 text-center md:text-left">
+                <div className="bg-chart-3/10 w-16 h-16 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform mx-auto md:mx-0">
                   <GitGraph className="h-8 w-8 text-chart-3" />
                 </div>
                 <div>
@@ -103,7 +103,7 @@ export default function AppHome() {
                   </CardDescription>
                 </div>
               </CardHeader>
-              <CardContent className="p-8 pt-0 flex items-center text-chart-3 font-bold gap-2">
+              <CardContent className="p-8 pt-0 flex items-center justify-center md:justify-start text-chart-3 font-bold gap-2">
                 Open Engine <ArrowRight className="h-4 w-4" />
               </CardContent>
             </Card>
@@ -141,9 +141,9 @@ export default function AppHome() {
             <div className="bg-primary p-2 rounded-lg shadow-sm">
               <Sparkles className="h-6 w-6 text-primary-foreground" />
             </div>
-            <div>
+            <div className="flex flex-col items-center">
               <h1 className="text-xl font-headline font-bold text-slate-900 tracking-tight">InsightCraft</h1>
-              <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em]">From Data to Insight</p>
+              <p className="text-[9px] text-muted-foreground font-black uppercase tracking-[0.2em]">From Data to Insight</p>
             </div>
           </div>
           <Button variant="ghost" size="sm" onClick={() => setView('landing')} className="text-muted-foreground hover:text-primary gap-2">
