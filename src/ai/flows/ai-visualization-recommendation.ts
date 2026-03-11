@@ -39,9 +39,21 @@ export type AIVisualizationRecommendationInput = z.infer<
 // Output Schema
 const RecommendationItemSchema = z.object({
   chartType: z.string().describe('The recommended chart type (e.g., Bar Chart, Line Chart, etc.).'),
-  reason: z.string().describe('Detailed reasoning for why this chart type is suitable based on the analytical goals.'),
+  reason: z.string().describe('Brief summary reasoning.'),
+  detailedReasoning: z.string().describe('Detailed explanation considering data structure, purpose, readability, and insight discovery.'),
   fieldMapping: z.string().describe('How to map the provided fields to chart axes/properties (e.g., X-axis -> Date).'),
   toolNotes: z.string().describe('Tool-specific implementation notes for the chosen tool.'),
+  dashboardLayout: z.object({
+    top: z.string().describe('Suggested components for the top section (e.g., KPI cards).'),
+    center: z.string().describe('Suggested primary visualization for the center.'),
+    right: z.string().describe('Suggested secondary visualization or panel for the right side.'),
+    bottom: z.string().describe('Suggested context or details for the bottom section.'),
+  }).describe('A simple dashboard layout idea using the recommended charts.'),
+  colorStrategy: z.object({
+    paletteType: z.string().describe('The type of color palette (e.g., Sequential, Diverging, Qualitative).'),
+    explanation: z.string().describe('Why this palette helps interpretation for this specific visualization.'),
+  }).describe('Recommended color strategies and their logic.'),
+  dataValidation: z.array(z.string()).describe('Useful data validation suggestions to avoid visualization errors.'),
 });
 
 const AIVisualizationRecommendationOutputSchema = z.object({
@@ -60,25 +72,24 @@ const aiVisualizationRecommendationPrompt = ai.definePrompt({
   prompt: `You are an expert data visualization specialist. Your task is to recommend suitable visualization types for a given tool, set of data fields, and one or more analytical purposes.
 
 Analytical Purpose Definitions & Priority:
-- Comparison: Compare values across categories (e.g., Sales by region). Charts: Bar, Grouped Bar, Dot Plot.
-- Trend over time: Show how values change across time (e.g., Monthly revenue). Charts: Line, Area, Time series plot. (High Priority for combined goals)
-- Distribution: Understand how data values are spread (e.g., Customer age). Charts: Histogram, Box Plot, Violin Plot.
-- Relationships / Correlation: Analyze relationships between variables (e.g., Sales vs Marketing). Charts: Scatter Plot, Bubble Chart, Regression Plot.
-- Composition / Percentage: Show how parts contribute to a whole (e.g., Market share). Charts: Pie, Stacked Bar, Treemap.
-- Composition over time: Show how composition changes across time. Charts: Stacked Area, Stacked Bar.
-- Ranking: Order categories by value (e.g., Top 10 states). Charts: Sorted Bar, Ranked Dot Plot.
-- Geographic analysis: Analyze spatial patterns (e.g., Sales by state). Charts: Filled Map, Symbol Map, Choropleth Map. (High Priority for combined goals)
-- Deviation from target: Show difference between actual values and targets. Charts: Bullet Chart, Variance Chart, Diverging Bar.
-- Hierarchical structure: Visualize nested categories (e.g., Category -> Subcategory). Charts: Treemap, Sunburst.
-- Flow / Process analysis: Show movement or transition between stages (e.g., Customer funnel). Charts: Sankey, Funnel.
-- Outlier detection: Identify unusual or extreme values. Charts: Box Plot, Scatter Plot, Violin Plot.
+- Comparison: Compare values across categories. Charts: Bar, Grouped Bar, Dot Plot.
+- Trend over time: Show changes over time. Charts: Line, Area, Time series plot. (High Priority)
+- Distribution: Understand data spread. Charts: Histogram, Box Plot, Violin Plot.
+- Relationships / Correlation: Analyze relationships between variables. Charts: Scatter Plot, Bubble Chart.
+- Composition / Percentage: Parts of a whole. Charts: Pie, Stacked Bar, Treemap.
+- Composition over time: Composition changes across time. Charts: Stacked Area, Stacked Bar.
+- Ranking: Order categories by value. Charts: Sorted Bar, Ranked Dot Plot.
+- Geographic analysis: Analyze spatial patterns. Charts: Filled Map, Symbol Map. (High Priority)
+- Deviation from target: Actual vs Target. Charts: Bullet Chart, Variance Chart.
+- Hierarchical structure: Visualize nested categories. Charts: Treemap, Sunburst.
+- Flow / Process analysis: Movement or transitions. Charts: Sankey, Funnel.
+- Outlier detection: Identify extreme values. Charts: Box Plot, Scatter Plot.
 
 Combined Purpose Logic:
-If multiple purposes are selected, you must determine the dominant analytical goal and recommend charts that satisfy both or prioritize the most critical one.
+If multiple purposes are selected, determine the dominant goal.
 Example Priorities:
-- Trend over time + Comparison -> Multi-line chart or Faceted line charts.
-- Geographic analysis + Comparison -> Filled map or Symbol map.
-- Ranking + Comparison -> Sorted Bar chart.
+- Trend over time + Comparison -> Multi-line chart.
+- Geographic analysis + Comparison -> Filled map.
 
 Tool Context:
 - Tool: {{{tool}}}
@@ -90,11 +101,15 @@ Based on these, provide:
 1. Primary Recommendation: The single best chart type.
 2. Alternative Recommendations: 2-4 alternative chart types.
 
-For each recommendation, include:
+For each recommendation, you MUST provide:
 - Chart Type: A standard chart name.
-- Reason: Why it fits the tool, data types, and the combination of purposes: {{#each purposes}}{{{this}}}{{#unless @last}}, {{/unless}}{{/each}}.
-- Field Mapping: Suggest which columns go to which axes or visual encodings.
+- Reason: Brief summary.
+- Detailed Reasoning: Explain WHY it fits the dataset considering data structure, purpose, readability, and insight discovery. Avoid generic explanations.
+- Field Mapping: Suggest column to axes mappings.
 - Tool-Specific Notes: Implementation advice specific to {{{tool}}}.
+- Dashboard Layout: A suggested dashboard arrangement (Top, Center, Right, Bottom).
+- Color Strategy: Palette type and specific explanation for why it helps interpretation.
+- Data Validation: Specific suggestions to avoid visualization errors (e.g., "Check for missing state codes", "Aggregate duplicates").
 
 The output should be a JSON object conforming to the AIVisualizationRecommendationOutputSchema.`,
 });
