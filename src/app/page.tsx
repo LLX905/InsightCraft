@@ -144,26 +144,26 @@ export default function AppHome() {
             <TabsList className="grid w-full max-w-4xl grid-cols-2 h-auto p-2 bg-muted/50 rounded-2xl">
               <TabsTrigger 
                 value="viz" 
-                className="flex flex-col items-center gap-1 py-4 px-6 text-center transition-all data-[state=active]:bg-white data-[state=active]:shadow-lg rounded-xl"
+                className="flex flex-col items-center justify-center gap-1 py-4 px-6 text-center transition-all data-[state=active]:bg-white data-[state=active]:shadow-lg rounded-xl"
               >
-                <div className="flex items-center gap-2">
+                <div className="flex items-center justify-center gap-2">
                   <BarChart3 className="h-5 w-5" />
                   <span className="text-base font-bold">Visualization Advisor</span>
                 </div>
-                <span className="text-[10px] text-muted-foreground leading-tight max-w-sm">
-                  Get AI suggestions for the best charts and dashboards based on your dataset and goal.
+                <span className="text-[10px] text-muted-foreground leading-tight max-w-sm text-center">
+                  Get AI suggestions for the best charts and dashboards based on your dataset and analysis goal.
                 </span>
               </TabsTrigger>
               <TabsTrigger 
                 value="mind" 
-                className="flex flex-col items-center gap-1 py-4 px-6 text-center transition-all data-[state=active]:bg-white data-[state=active]:shadow-lg rounded-xl"
+                className="flex flex-col items-center justify-center gap-1 py-4 px-6 text-center transition-all data-[state=active]:bg-white data-[state=active]:shadow-lg rounded-xl"
               >
-                <div className="flex items-center gap-2">
+                <div className="flex items-center justify-center gap-2">
                   <GitGraph className="h-5 w-5" />
                   <span className="text-base font-bold">Mind Map Problem Solver</span>
                 </div>
-                <span className="text-[10px] text-muted-foreground leading-tight max-w-sm">
-                  Generate structured mind maps to explore causes, perspectives, and possible solutions.
+                <span className="text-[10px] text-muted-foreground leading-tight max-w-sm text-center">
+                  Generate structured mind maps to explore causes, perspectives, and possible solutions to a problem.
                 </span>
               </TabsTrigger>
             </TabsList>
