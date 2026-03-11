@@ -43,13 +43,16 @@ export default function AppHome() {
           <div className="text-center space-y-4">
             <div className="inline-flex items-center gap-3 bg-white px-4 py-2 rounded-2xl shadow-sm border border-slate-100 mb-4">
               <Sparkles className="h-6 w-6 text-primary" />
-              <span className="font-headline font-bold text-xl text-primary tracking-tight">InsightCraft AI</span>
+              <div className="flex flex-col items-start">
+                <span className="font-headline font-bold text-xl text-primary tracking-tight">InsightCraft AI</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">From Data to Insight</span>
+              </div>
             </div>
             <h1 className="text-5xl md:text-6xl font-headline font-bold text-slate-900 tracking-tight">
-              Your AI Analytical Assistant
+              Analyze with Precision
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Choose what you want to do today. InsightCraft AI provides structured strategic support for your most complex data and logic challenges.
+              InsightCraft AI provides structured strategic support for your most complex data and logic challenges.
             </p>
           </div>
 
@@ -120,7 +123,7 @@ export default function AppHome() {
 
   // --- Main Application View (Tabs) ---
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       <header className="border-b bg-card py-4 px-6 sticky top-0 z-50 shadow-sm no-print">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => setView('landing')}>
@@ -129,7 +132,7 @@ export default function AppHome() {
             </div>
             <div>
               <h1 className="text-xl font-headline font-bold text-slate-900 tracking-tight">InsightCraft AI</h1>
-              <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em]">Your AI Analytical Assistant</p>
+              <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em]">From Data to Insight</p>
             </div>
           </div>
           <Button variant="ghost" size="sm" onClick={() => setView('landing')} className="text-muted-foreground hover:text-primary gap-2">
@@ -138,7 +141,7 @@ export default function AppHome() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto p-4 md:p-8 print:p-0 print:max-w-none print:m-0">
+      <main className="max-w-7xl mx-auto p-4 md:p-8 print:p-0 print:max-w-none print:m-0 flex-grow w-full">
         <Tabs defaultValue={view === 'landing' ? 'viz' : view} className="w-full space-y-8">
           <div className="flex justify-center no-print">
             <TabsList className="grid w-full max-w-4xl grid-cols-2 h-auto p-2 bg-muted/50 rounded-2xl overflow-hidden">
@@ -179,9 +182,11 @@ export default function AppHome() {
         </Tabs>
       </main>
 
-      <footer className="border-t py-12 mt-20 bg-muted/10 no-print">
+      <footer className="border-t py-8 mt-12 bg-muted/20 no-print">
         <div className="max-w-7xl mx-auto px-6 text-center">
-          <p className="text-sm text-muted-foreground">InsightCraft AI — Precision, Strategy, Insight.</p>
+          <p className="text-xs font-medium text-muted-foreground">
+            © 2026 InsightCraft AI | Created by LLX905
+          </p>
         </div>
       </footer>
     </div>

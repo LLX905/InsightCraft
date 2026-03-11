@@ -3,7 +3,7 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 
 export const metadata: Metadata = {
-  title: 'InsightCraft AI – Intelligent Visualization & Analysis',
+  title: 'InsightCraft AI – From Data to Insight',
   description: 'AI-driven data profiling, visualization recommendations, and multi-level mind map analysis.',
 };
 
