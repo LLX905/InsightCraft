@@ -13,7 +13,9 @@ import {
   Layout as LayoutIcon,
   Palette,
   ShieldCheck,
-  Info
+  Info,
+  MapPin,
+  Terminal
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -46,7 +48,6 @@ export default function VisualizationsPage() {
   });
   const [results, setResults] = useState<AIVisualizationRecommendationOutput | null>(null);
 
-  // Prevent hydration mismatch
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -149,7 +150,7 @@ export default function VisualizationsPage() {
             </div>
 
             <div className="space-y-4">
-              <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Analytical Purposes (Select Multiple)</Label>
+              <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Analytical Purposes</Label>
               <div className="grid gap-2 max-h-[400px] overflow-y-auto pr-2 scrollbar-thin">
                 {visualizationPurposes.map(purpose => (
                   <div key={purpose.label} className={cn(
@@ -183,8 +184,9 @@ export default function VisualizationsPage() {
       <div className="lg:col-span-8 space-y-8">
         {results ? (
           <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            {/* Primary Recommendation */}
-            <div className="space-y-6">
+            
+            {/* 1. Primary Strategic Choice */}
+            <section className="space-y-6">
               <div className="flex items-center justify-between">
                 <h3 className="text-2xl font-headline font-bold flex items-center gap-2">
                   <Sparkles className="h-6 w-6 text-accent" />
@@ -194,104 +196,28 @@ export default function VisualizationsPage() {
               </div>
               
               <Card className="overflow-hidden border-2 border-primary shadow-2xl ring-4 ring-primary/5">
-                <CardHeader className="bg-primary/5 border-b">
+                <CardHeader className="bg-primary/5 border-b py-6">
                   <div className="flex items-center gap-3">
                     <CheckCircle2 className="h-6 w-6 text-primary" />
-                    <CardTitle className="text-2xl font-headline">{results.primaryRecommendation.chartType}</CardTitle>
+                    <CardTitle className="text-3xl font-headline">{results.primaryRecommendation.chartType}</CardTitle>
                   </div>
                 </CardHeader>
-                <CardContent className="pt-8 space-y-8">
-                  {/* Detailed Reasoning */}
+                <CardContent className="pt-8 pb-10">
                   <div className="space-y-4">
                     <div className="flex items-center gap-2 text-[10px] font-black uppercase text-muted-foreground tracking-[0.2em]">
                       <Info className="h-3 w-3" />
-                      Detailed Strategic Reasoning
+                      Strategic Reasoning
                     </div>
                     <p className="text-lg leading-relaxed text-slate-700 font-medium italic">
                       {results.primaryRecommendation.detailedReasoning}
                     </p>
                   </div>
-
-                  <Separator />
-
-                  <div className="grid md:grid-cols-2 gap-8">
-                    {/* Implementation Specs */}
-                    <div className="space-y-6">
-                      <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 shadow-sm">
-                        <span className="text-[10px] font-black uppercase text-slate-500 tracking-[0.2em] block mb-4">Field Mapping & Config</span>
-                        <div className="text-sm font-bold text-slate-800 bg-white p-3 rounded-lg border">
-                          {results.primaryRecommendation.fieldMapping}
-                        </div>
-                      </div>
-
-                      <div className="p-5 rounded-2xl bg-accent/5 border border-accent/20">
-                        <span className="text-[10px] font-black uppercase text-accent tracking-[0.2em] block mb-4">{formData.tool} Implementation Notes</span>
-                        <p className="text-sm text-accent-foreground font-medium">{results.primaryRecommendation.toolNotes}</p>
-                      </div>
-                    </div>
-
-                    {/* Additional Insights */}
-                    <div className="space-y-6">
-                      <div className="p-5 rounded-2xl bg-blue-50/50 border border-blue-100">
-                        <span className="text-[10px] font-black uppercase text-blue-600 tracking-[0.2em] flex items-center gap-2 mb-4">
-                          <LayoutIcon className="h-3 w-3" /> Suggested Dashboard Layout
-                        </span>
-                        <div className="space-y-3">
-                          <div className="flex items-start gap-2 text-xs border-b border-blue-100 pb-2">
-                            <span className="font-bold text-blue-800 min-w-[60px]">Top:</span>
-                            <span className="text-slate-600">{results.primaryRecommendation.dashboardLayout.top}</span>
-                          </div>
-                          <div className="flex items-start gap-2 text-xs border-b border-blue-100 pb-2">
-                            <span className="font-bold text-blue-800 min-w-[60px]">Center:</span>
-                            <span className="text-slate-600">{results.primaryRecommendation.dashboardLayout.center}</span>
-                          </div>
-                          <div className="flex items-start gap-2 text-xs border-b border-blue-100 pb-2">
-                            <span className="font-bold text-blue-800 min-w-[60px]">Right:</span>
-                            <span className="text-slate-600">{results.primaryRecommendation.dashboardLayout.right}</span>
-                          </div>
-                          <div className="flex items-start gap-2 text-xs pt-1">
-                            <span className="font-bold text-blue-800 min-w-[60px]">Bottom:</span>
-                            <span className="text-slate-600">{results.primaryRecommendation.dashboardLayout.bottom}</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="p-5 rounded-2xl bg-emerald-50/50 border border-emerald-100">
-                        <span className="text-[10px] font-black uppercase text-emerald-600 tracking-[0.2em] flex items-center gap-2 mb-4">
-                          <Palette className="h-3 w-3" /> Color Strategy
-                        </span>
-                        <Badge variant="outline" className="mb-2 bg-white text-emerald-700 border-emerald-200">
-                          {results.primaryRecommendation.colorStrategy.paletteType}
-                        </Badge>
-                        <p className="text-xs text-emerald-800 leading-relaxed">
-                          {results.primaryRecommendation.colorStrategy.explanation}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <Separator />
-
-                  {/* Data Validation */}
-                  <div className="p-5 rounded-2xl bg-orange-50/30 border border-orange-100">
-                    <span className="text-[10px] font-black uppercase text-orange-600 tracking-[0.2em] flex items-center gap-2 mb-4">
-                      <ShieldCheck className="h-3 w-3" /> Data Validation & Integrity
-                    </span>
-                    <ul className="grid sm:grid-cols-2 gap-3">
-                      {results.primaryRecommendation.dataValidation.map((tip, idx) => (
-                        <li key={idx} className="flex items-start gap-2 text-xs text-orange-900">
-                          <div className="h-1.5 w-1.5 rounded-full bg-orange-400 mt-1.5 shrink-0" />
-                          {tip}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
                 </CardContent>
               </Card>
-            </div>
+            </section>
 
-            {/* Alternative Perspective */}
-            <div className="space-y-6">
+            {/* 2. Alternative Analytical Perspectives */}
+            <section className="space-y-6">
               <h3 className="text-sm font-black uppercase tracking-[0.3em] text-muted-foreground flex items-center gap-2">
                 <Layers className="h-4 w-4" />
                 Alternative Analytical Perspectives
@@ -300,27 +226,124 @@ export default function VisualizationsPage() {
               <div className="grid sm:grid-cols-2 gap-6">
                 {results.alternativeRecommendations.map((rec, idx) => (
                   <Card key={idx} className="overflow-hidden border-l-4 border-l-slate-300 transition-all hover:border-l-accent hover:shadow-lg">
-                    <CardHeader className="py-4 px-6 bg-slate-50/50">
+                    <CardHeader className="py-4 px-6 bg-slate-50/50 border-b">
                       <div className="flex items-center justify-between">
                         <CardTitle className="text-lg font-headline font-bold text-slate-800">{rec.chartType}</CardTitle>
                         <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest px-2">ALT {idx + 1}</Badge>
                       </div>
                     </CardHeader>
-                    <CardContent className="p-6 space-y-4">
+                    <CardContent className="p-6">
                       <p className="text-sm text-slate-600 leading-relaxed italic">{rec.detailedReasoning}</p>
-                      <div className="flex items-center justify-between gap-4">
-                        <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                          {rec.colorStrategy.paletteType} Palette
-                        </div>
-                        <Badge variant="secondary" className="text-[10px] bg-slate-100">
-                          {rec.fieldMapping}
-                        </Badge>
-                      </div>
                     </CardContent>
                   </Card>
                 ))}
               </div>
-            </div>
+            </section>
+
+            {/* 3. Field Mapping Guide */}
+            <section className="space-y-4">
+              <h3 className="text-sm font-black uppercase tracking-[0.3em] text-muted-foreground flex items-center gap-2">
+                <MapPin className="h-4 w-4" />
+                Field Mapping Guide
+              </h3>
+              <div className="p-6 rounded-2xl bg-slate-900 text-slate-50 border shadow-inner">
+                <div className="flex items-center gap-2 mb-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                  <Terminal className="h-3 w-3" /> Technical Specification
+                </div>
+                <div className="text-lg font-mono font-bold leading-relaxed">
+                  {results.primaryRecommendation.fieldMapping}
+                </div>
+              </div>
+            </section>
+
+            {/* 4. Tool-Specific Implementation */}
+            <section className="space-y-4">
+              <h3 className="text-sm font-black uppercase tracking-[0.3em] text-muted-foreground flex items-center gap-2">
+                <Settings2 className="h-4 w-4" />
+                Tool-Specific Implementation
+              </h3>
+              <Card className="bg-accent/5 border-accent/20">
+                <CardContent className="p-6 space-y-4">
+                  <Badge variant="outline" className="bg-white text-accent-foreground border-accent/20 font-bold">
+                    Target Tool: {formData.tool}
+                  </Badge>
+                  <p className="text-sm leading-relaxed text-slate-700">
+                    {results.primaryRecommendation.toolNotes}
+                  </p>
+                </CardContent>
+              </Card>
+            </section>
+
+            {/* 5. Suggested Dashboard Layout */}
+            <section className="space-y-4">
+              <h3 className="text-sm font-black uppercase tracking-[0.3em] text-muted-foreground flex items-center gap-2">
+                <LayoutIcon className="h-4 w-4" />
+                Suggested Dashboard Layout
+              </h3>
+              <Card className="bg-blue-50/30 border-blue-100">
+                <CardContent className="p-8">
+                  <div className="grid gap-6">
+                    <div className="flex flex-col sm:flex-row sm:items-start gap-4 pb-4 border-b border-blue-100">
+                      <span className="min-w-[100px] text-xs font-black uppercase text-blue-800 tracking-widest mt-1">Top</span>
+                      <p className="text-sm text-slate-700">{results.primaryRecommendation.dashboardLayout.top}</p>
+                    </div>
+                    <div className="flex flex-col sm:flex-row sm:items-start gap-4 pb-4 border-b border-blue-100">
+                      <span className="min-w-[100px] text-xs font-black uppercase text-blue-800 tracking-widest mt-1">Center</span>
+                      <p className="text-sm text-slate-700 font-bold">{results.primaryRecommendation.dashboardLayout.center}</p>
+                    </div>
+                    <div className="flex flex-col sm:flex-row sm:items-start gap-4 pb-4 border-b border-blue-100">
+                      <span className="min-w-[100px] text-xs font-black uppercase text-blue-800 tracking-widest mt-1">Right</span>
+                      <p className="text-sm text-slate-700">{results.primaryRecommendation.dashboardLayout.right}</p>
+                    </div>
+                    <div className="flex flex-col sm:flex-row sm:items-start gap-4">
+                      <span className="min-w-[100px] text-xs font-black uppercase text-blue-800 tracking-widest mt-1">Bottom</span>
+                      <p className="text-sm text-slate-700">{results.primaryRecommendation.dashboardLayout.bottom}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </section>
+
+            {/* 6. Color & Design Recommendations */}
+            <section className="space-y-4">
+              <h3 className="text-sm font-black uppercase tracking-[0.3em] text-muted-foreground flex items-center gap-2">
+                <Palette className="h-4 w-4" />
+                Color & Design Recommendations
+              </h3>
+              <Card className="bg-emerald-50/30 border-emerald-100">
+                <CardContent className="p-6 space-y-4">
+                  <div className="flex items-center gap-3">
+                    <Badge className="bg-emerald-600 text-white border-none">
+                      {results.primaryRecommendation.colorStrategy.paletteType}
+                    </Badge>
+                  </div>
+                  <p className="text-sm leading-relaxed text-slate-700 italic">
+                    {results.primaryRecommendation.colorStrategy.explanation}
+                  </p>
+                </CardContent>
+              </Card>
+            </section>
+
+            {/* 7. Data validation & integrity */}
+            <section className="space-y-4">
+              <h3 className="text-sm font-black uppercase tracking-[0.3em] text-muted-foreground flex items-center gap-2">
+                <ShieldCheck className="h-4 w-4" />
+                Data validation & integrity
+              </h3>
+              <Card className="bg-orange-50/20 border-orange-100">
+                <CardContent className="p-6">
+                  <ul className="grid sm:grid-cols-2 gap-4">
+                    {results.primaryRecommendation.dataValidation.map((tip, idx) => (
+                      <li key={idx} className="flex items-start gap-3 text-sm text-orange-900 group">
+                        <div className="h-2 w-2 rounded-full bg-orange-400 mt-1.5 shrink-0 group-hover:scale-125 transition-transform" />
+                        {tip}
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            </section>
+
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center py-40 text-center text-muted-foreground bg-white/50 rounded-3xl border-2 border-dashed border-slate-200">
@@ -329,7 +352,7 @@ export default function VisualizationsPage() {
             </div>
             <h3 className="text-2xl font-headline font-bold text-slate-900">Awaiting Strategy Definition</h3>
             <p className="max-w-md mx-auto text-sm leading-relaxed mt-4">
-              Configure your visualization tool and select multiple analytical intents on the left to receive a prioritized diagnostic charting strategy with detailed mapping and dashboard logic.
+              Configure your visualization tool and select analytical intents on the left to receive a prioritized diagnostic charting strategy.
             </p>
           </div>
         )}
