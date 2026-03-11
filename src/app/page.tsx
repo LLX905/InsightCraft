@@ -1,4 +1,3 @@
-
 'use client';
 
 import * as React from 'react';
@@ -39,7 +38,7 @@ export default function AppHome() {
     <footer className="border-t py-8 mt-auto bg-muted/20 no-print w-full">
       <div className="max-w-7xl mx-auto px-6 text-center">
         <p className="text-xs font-medium text-muted-foreground">
-          © 2026 InsightCraft AI | Created by LLX905
+          © 2026 InsightCraft | Created by LLX905
         </p>
       </div>
     </footer>
@@ -55,7 +54,7 @@ export default function AppHome() {
             <div className="inline-flex items-center gap-3 bg-white px-4 py-2 rounded-2xl shadow-sm border border-slate-100 mb-4 mx-auto">
               <Sparkles className="h-6 w-6 text-primary" />
               <div className="flex flex-col items-start">
-                <span className="font-headline font-bold text-xl text-primary tracking-tight">InsightCraft AI</span>
+                <span className="font-headline font-bold text-xl text-primary tracking-tight">InsightCraft</span>
                 <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">From Data to Insight</span>
               </div>
             </div>
@@ -63,7 +62,7 @@ export default function AppHome() {
               Analyze with Precision
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              InsightCraft AI provides structured strategic support for your most complex data and logic challenges.
+              InsightCraft provides structured strategic support for your most complex data and logic challenges.
             </p>
           </div>
 
@@ -143,7 +142,7 @@ export default function AppHome() {
               <Sparkles className="h-6 w-6 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="text-xl font-headline font-bold text-slate-900 tracking-tight">InsightCraft AI</h1>
+              <h1 className="text-xl font-headline font-bold text-slate-900 tracking-tight">InsightCraft</h1>
               <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em]">From Data to Insight</p>
             </div>
           </div>
