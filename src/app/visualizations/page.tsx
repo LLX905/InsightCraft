@@ -82,17 +82,32 @@ export default function VisualizationsPage() {
     );
   }
 
+  const visualizationPurposes = [
+    'Comparison',
+    'Trend over time',
+    'Distribution',
+    'Relationships / Correlation',
+    'Composition / Percentage',
+    'Composition over time',
+    'Ranking',
+    'Geographic analysis',
+    'Deviation from target',
+    'Hierarchical structure',
+    'Flow / Process analysis',
+    'Outlier detection'
+  ];
+
   return (
     <div className="grid gap-8 lg:grid-cols-12 items-start">
       {/* Input Section */}
       <div className="lg:col-span-5 space-y-6">
-        <Card className="border-t-4 border-t-primary">
+        <Card className="border-t-4 border-t-primary shadow-md">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 font-headline">
               <Settings2 className="h-5 w-5 text-primary" />
               Dataset Configuration
             </CardTitle>
-            <CardDescription>Tell us about your data and your visualization goals.</CardDescription>
+            <CardDescription>Tell us about your data and your analytical goals.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="space-y-2">
@@ -143,15 +158,7 @@ export default function VisualizationsPage() {
                   <SelectValue placeholder="What is the goal?" />
                 </SelectTrigger>
                 <SelectContent>
-                  {[
-                    'Comparison',
-                    'Trend over time',
-                    'Distribution',
-                    'Relationship between variables',
-                    'Composition / percentage',
-                    'Geographic analysis',
-                    'Ranking'
-                  ].map(p => (
+                  {visualizationPurposes.map(p => (
                     <SelectItem key={p} value={p}>{p}</SelectItem>
                   ))}
                 </SelectContent>
@@ -176,7 +183,7 @@ export default function VisualizationsPage() {
             </h3>
             
             {results.recommendations.map((rec, idx) => (
-              <Card key={idx} className="overflow-hidden border-l-4 border-l-accent">
+              <Card key={idx} className="overflow-hidden border-l-4 border-l-accent shadow-sm">
                 <CardHeader className="bg-muted/30 pb-4">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-lg font-headline">{rec.chartType}</CardTitle>
