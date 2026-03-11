@@ -1,3 +1,4 @@
+
 'use client';
 
 import * as React from 'react';
@@ -34,14 +35,24 @@ export default function AppHome() {
     );
   }
 
+  const footer = (
+    <footer className="border-t py-8 mt-auto bg-muted/20 no-print w-full">
+      <div className="max-w-7xl mx-auto px-6 text-center">
+        <p className="text-xs font-medium text-muted-foreground">
+          © 2026 InsightCraft AI | Created by LLX905
+        </p>
+      </div>
+    </footer>
+  );
+
   // --- Welcome Landing View ---
   if (view === 'landing') {
     return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/5 via-background to-background">
-        <div className="max-w-4xl w-full space-y-12">
+      <div className="min-h-screen bg-background flex flex-col items-center justify-between bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/5 via-background to-background">
+        <div className="max-w-4xl w-full space-y-12 px-6 py-20 flex-grow flex flex-col justify-center">
           {/* Hero Header */}
           <div className="text-center space-y-4">
-            <div className="inline-flex items-center gap-3 bg-white px-4 py-2 rounded-2xl shadow-sm border border-slate-100 mb-4">
+            <div className="inline-flex items-center gap-3 bg-white px-4 py-2 rounded-2xl shadow-sm border border-slate-100 mb-4 mx-auto">
               <Sparkles className="h-6 w-6 text-primary" />
               <div className="flex flex-col items-start">
                 <span className="font-headline font-bold text-xl text-primary tracking-tight">InsightCraft AI</span>
@@ -117,6 +128,7 @@ export default function AppHome() {
             </div>
           </div>
         </div>
+        {footer}
       </div>
     );
   }
@@ -182,13 +194,7 @@ export default function AppHome() {
         </Tabs>
       </main>
 
-      <footer className="border-t py-8 mt-12 bg-muted/20 no-print">
-        <div className="max-w-7xl mx-auto px-6 text-center">
-          <p className="text-xs font-medium text-muted-foreground">
-            © 2026 InsightCraft AI | Created by LLX905
-          </p>
-        </div>
-      </footer>
+      {footer}
     </div>
   );
 }
