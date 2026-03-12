@@ -51,3 +51,8 @@ This project was built to explore how AI can assist analysts in:
 - choosing effective visualizations
 - structuring analytical thinking
 - improving problem-solving workflows
+
+
+## Preview
+
+![InsightCraft](https://github.com/user-attachments/assets/ddb0607b-0b29-4da1-b618-b957f16010ef)
